@@ -1,0 +1,500 @@
+prediction,reference,f1,em,tokens_used,num_api_calls
+Badr Hari,Badr Hari,1.0,1,2035,1
+Super Bowl XLVIII,Super Bowl XLVIII,1.0,1,2173,1
+"James Hetfield, Lars Ulrich, Kirk Hammett, Robert Trujillo","Hetfield and Ulrich, longtime lead guitarist Kirk Hammett, and bassist Robert Trujillo.",0.6,0,2628,1
+2017,2017,1.0,1,1561,1
+Nevada,Nevada,1.0,1,1794,1
+Kelli Ward,Kelli Ward,1.0,1,1594,1
+Carol Lawrence,Carol Lawrence,1.0,1,1956,1
+New York City,New York City,1.0,1,2257,1
+Amy Jo Johnson,Amy Jo Johnson,1.0,1,2145,1
+Australia,Australia,1.0,1,1585,1
+California,California,1.0,1,1474,1
+Roman Catholic,Roman Catholic,1.0,1,2119,1
+Howard Marks,Dennis Howard Marks,0.8,0,1838,1
+Robert Sheehan,Robert Sheehan,1.0,1,1484,1
+Sex and the City,Sex and the City,1.0,1,2214,1
+England,England,1.0,1,2310,1
+Robert Zemeckis,Robert Zemeckis,1.0,1,2162,1
+South Park,South Park,1.0,1,1820,1
+Boston College,Boston College,1.0,1,2115,1
+Victor Mature,Victor John Mature,0.8,0,2292,1
+Canada,Canada,1.0,1,1628,1
+Keyshia Cole,Keyshia Cole,1.0,1,2348,1
+"Peter O'Meara portrayed Norman Dike in the HBO series ""Band of Brothers"".",Band of Brothers,0.4,0,2209,1
+Train to Busan,Train to Busan,1.0,1,1637,1
+Music industry,rock band,0.0,0,1886,1
+CEO of Lionsgate UK & Europe,CEO of Lionsgate UK & Europe,1.0,1,2158,1
+Swoosie Kurtz,Swoosie Kurtz,1.0,1,1495,1
+Great Britain,Great Britain,1.0,1,7877,1
+"July 5, 1984","July 5, 1984",1.0,1,1393,1
+Turkey,Turkey,1.0,1,1864,1
+300,300,1.0,1,1869,1
+"2,586","2,586",1.0,1,1688,1
+English,English,1.0,1,1424,1
+Imi Lichtenfeld,"Emrich ""Imi"" Lichtenfeld",0.8,0,1796,1
+Lord Black of Crossharbour,Lord Black of Crossharbour,1.0,1,1736,1
+"Central, Hong Kong",Hong Kong,0.8,0,3555,1
+Danny Manning,Danny Manning,1.0,1,2595,1
+Bust,BUST,1.0,1,1983,1
+rock,rock,1.0,1,1969,1
+Sarah J. Maas,Sarah Janet Maas,0.6666666666666666,0,1603,1
+Gorillaz,alternative rock virtual band Gorillaz,0.33333333333333337,0,2463,1
+rock,rock,1.0,1,6280,1
+Harbour City,"Tsim Sha Tsui, Hong Kong",0.0,0,1572,1
+Massachusetts,Massachusetts,1.0,1,1694,1
+Carabus glabratus,beetle,0.0,0,1718,1
+Cataloochee,Cataloochee,1.0,1,1788,1
+NBC 10,NBC 10,1.0,1,2055,1
+writer,playwright,0.0,0,1719,1
+China,China,1.0,1,540,1
+The Raconteurs,The Raconteurs,1.0,1,1455,1
+Cooking Light,Cooking Light,1.0,1,1658,1
+Radiohead,Radiohead,1.0,1,1967,1
+music drama,opera,0.0,0,2677,1
+Lyudmila Petrushevskaya,Lyudmila Stefanovna Petrushevskaya,0.8,0,1649,1
+yes,yes,1.0,1,612,1
+Donington,"Donington, Lincolnshire",0.6666666666666666,0,1239,1
+ESPN,ESPN,1.0,1,2046,1
+Amelia Earhart,Amelia Earhart,1.0,1,1986,1
+England,England,1.0,1,2558,1
+Germany,Germany,1.0,1,1417,1
+George Frideric Handel,George Frideric Handel,1.0,1,1741,1
+Valley View Casino Center,Valley View Casino Center,1.0,1,1564,1
+Paul McCartney,Paul McCartney,1.0,1,2302,1
+Middleweight,refers to different weight classes,0.0,0,2047,1
+Love/Hate,Love/Hate,1.0,1,1972,1
+The answer is not found in the context.,Scott Joplin,0.0,0,3241,1
+Ram Charan,Ram Charan,1.0,1,2432,1
+"September 29, 1784","September 29, 1784",1.0,1,1980,1
+two,two,1.0,1,2568,1
+25 June 1961,25 June 1961,1.0,1,1650,1
+field hockey,2012 Summer Olympics,0.0,0,1505,1
+The Ladykillers,The Ladykillers,1.0,1,1933,1
+Authors,is a British author,0.0,0,1605,1
+Born to Run,Born to Run,1.0,1,1685,1
+England,England,1.0,1,1731,1
+Mar-a-Lago,Mar-a-Lago,1.0,1,1956,1
+singer,lead singer,0.6666666666666666,0,1680,1
+Dick Van Patten,Richard Vincent Van Patten,0.5714285714285715,0,1433,1
+Vancouver Canucks,Vancouver Canucks,1.0,1,1785,1
+No,no,1.0,1,2330,1
+I Will Always Love You,I Will Always Love You,1.0,1,2271,1
+Adelphi Theatre,Adelphi Theatre,1.0,1,2987,1
+Steyr Mannlicher,Steyr Mannlicher,1.0,1,1063,1
+Country music,country,0.6666666666666666,0,3106,1
+film director,film director,1.0,1,1188,1
+Warrington,Cheshire,0.0,0,1826,1
+American Pie,American Pie,1.0,1,1671,1
+1979,Mellon Collie and the Infinite Sadness,0.0,0,2923,1
+Newton Park on Duchy of Cornwall land,Duchy of Cornwall land,0.7272727272727273,0,1561,1
+Brandon Camp,Brandon Camp,1.0,1,1237,1
+Brazil,Brazil,1.0,1,1938,1
+Kisimul Castle,Scotland,0.0,0,2644,1
+1958,1958,1.0,1,1887,1
+2 years,II,0.0,0,2771,1
+action-adventure-fantasy,action,0.0,0,1733,1
+Rudolf Nureyev,Rudolf Khametovich Nureyev,0.8,0,2655,1
+A Mother's Gift,A Mother's Gift,1.0,1,1934,1
+Predestination,Predestination,1.0,1,2368,1
+World War II,World War II,1.0,1,1819,1
+"August 5, 1962","August 5, 1962",1.0,1,2000,1
+"Conway, Missouri",Missouri,0.6666666666666666,0,2369,1
+Newton Heath LYR Football Club,the club was founded as Newton Heath LYR,0.6153846153846154,0,7909,1
+Ford Motor Land Development and Petrie Dierman Kughn,Petrie Dierman Kughn in 1994.,0.4615384615384615,0,1881,1
+New York Cotton Exchange,New York Cotton Exchange,1.0,1,1958,1
+"8,765,000","8,765,000",1.0,1,1878,1
+Mary Stanley,Mary Stanley,1.0,1,1920,1
+Dick Van Dyke,Dick Van Dyke,1.0,1,3115,1
+Luc Besson,Luc Besson,1.0,1,1941,1
+St. Johns College was an important contributor and co-sponsor of EnVISIONing Annapolis.,Important contributors and co-sponsors,0.25,0,2163,1
+1975,1975,1.0,1,1677,1
+Andrew Goth,Andrew Goth,1.0,1,1571,1
+Gordie Tapp,"banjo player and former member of the television variety show ""Hee Haw"" gang having played the role of Ida Lee Nagger, the ironing, nagging wife of Laverne Nagger (Gordie Tapp).",0.125,0,1712,1
+Hyde United Football Club,Hyde United Football Club,1.0,1,1323,1
+2005,"March 3, 2005",0.5,0,2910,1
+"Psychedelic rock, progressive rock",rock,0.4,0,7459,1
+40 years,40 years,1.0,1,1768,1
+Royal Irish Regiment,Royal Irish Regiment,1.0,1,1837,1
+Greta Garbo,Greta Garbo,1.0,1,1977,1
+Arto Tunçboyacıyan,Arto Tunçboyacıyan,1.0,1,1389,1
+Dawn of the Planet of the Apes,Dawn of the Planet of the Apes,1.0,1,2575,1
+Enterprise Rent-A-Car,Enterprise Rent-A-Car,1.0,1,1206,1
+Ethanol,Ethanol,1.0,1,2520,1
+Kansas City Chiefs,2016 Kansas City Chiefs season,0.7499999999999999,0,2840,1
+Burchardia,Burchardia,1.0,1,1544,1
+game shows,game shows,1.0,1,1801,1
+World War II,World War II,1.0,1,1645,1
+Americans,Americans,1.0,1,1894,1
+Sri Lanka,Sri Lanka,1.0,1,1723,1
+"March 1, 2017","March 1, 2017",1.0,1,1721,1
+Pearl Harbor,Pearl Harbor,1.0,1,1874,1
+"Atlanta, Georgia","Atlanta, Georgia",1.0,1,2134,1
+M.I.L.F. $,M.I.L.F. $,1.0,1,2046,1
+(RED),RED,1.0,1,2885,1
+Calvin Coolidge,John Calvin Coolidge Jr.,0.6666666666666666,0,2653,1
+13-18,13-18,1.0,1,1548,1
+Molière,Molière,1.0,1,1955,1
+1957,1957,1.0,1,1207,1
+Smriti Irani,Smriti Malhotra,0.5,0,1806,1
+Jessica Alba,Jessica Marie Alba,0.8,0,1152,1
+"Lismore, County Waterford",Ireland,0.0,0,2605,1
+33 km,33 km,1.0,1,1380,1
+Board games,game,0.0,0,2297,1
+Kingdom of England,Kingdom of England,1.0,1,1931,1
+John le Carré,David John Moore Cornwell,0.28571428571428575,0,1818,1
+genera,plants,0.0,0,755,1
+Jason Statham,Jason Statham,1.0,1,1343,1
+Benny Andersson,Benny Andersson,1.0,1,1917,1
+2005,2005,1.0,1,2635,1
+Canada,Canada,1.0,1,1822,1
+Alan Sokal,Alan Sokal,1.0,1,2947,1
+sejm walny,Sejm of the Polish–Lithuanian Commonwealth,0.28571428571428575,0,2610,1
+Na Do-hyang,Na Do-hyang,1.0,1,1895,1
+United States,United States,1.0,1,1752,1
+John Ritter,John Ritter,1.0,1,1521,1
+Oglala Lakota,"American Horse (Oglala Lakota: ""Wašíčuŋ Tȟašúŋke"" in Standard Lakota Orthography) (a/k/a ""American Horse the Elder"") (1830–September 9, 1876) was an Oglala Lakota warrior chief renowned for Spartan courage and honor.",0.125,0,1884,1
+China,People's Republic of China,0.4,0,445,1
+Stellenbosch University,"Founded in 1868, WSU consists of 13 schools and colleges offering nearly 350 programs to more than 27,000 graduate and undergraduate students",0.0,0,1970,1
+film director,film director,1.0,1,1779,1
+Philip Terzian,Philip Henry Terzian,0.8,0,1710,1
+Manchester United,Saint-Étienne,0.0,0,1668,1
+Christopher Paolini,Christopher Paolini,1.0,1,1688,1
+Professor Emeritus,Professor Emeritus,1.0,1,1704,1
+(Till) I Kissed You,'Till) I Kissed You,1.0,1,1941,1
+"January 9, 2011",9 January 2011,1.0,0,1754,1
+Johnny English Reborn,Johnny English Reborn,1.0,1,1564,1
+New Orleans Arena,Smoothie King Center,0.0,0,2133,1
+"2005, 2007","2005, 2007",1.0,1,1894,1
+Between Shades of Gray,Between Shades of Gray,1.0,1,2989,1
+2003,2003,1.0,1,1646,1
+SBS,SBS,1.0,1,2083,1
+documentary films,film,0.0,0,2384,1
+World War II,World War II,1.0,1,2466,1
+musician,singer,0.0,0,1761,1
+Rapture,Rapture,1.0,1,1562,1
+poet,poet,1.0,1,1389,1
+Blanck Mass,Blanck Mass,1.0,1,2225,1
+Lee Hong-gi,Lee Hong-gi,1.0,1,2095,1
+Hamilton,Hamilton,1.0,1,1680,1
+Julius Caesar,"Shakespeare's play ""Julius Caesar""",0.6666666666666666,0,2061,1
+Baaghi 2,Hindi and Telugu films,0.0,0,4027,1
+British Cunard Line,British Cunard Line,1.0,1,1988,1
+John Randle,John Anthony Randle,0.8,0,2398,1
+Ron Kovic,"Ronald Lawrence ""Ron"" Kovic",0.6666666666666666,0,2205,1
+Jay,Jay,1.0,1,1906,1
+United States,United States,1.0,1,2307,1
+Netherlands,Netherlands,1.0,1,1782,1
+"May 11, 1894","May 11, 1894",1.0,1,1650,1
+"October 28, 2016","October 28, 2016",1.0,1,2126,1
+"University of California, Berkeley","University of California, Berkeley",1.0,1,1846,1
+"September 23, 1991","September 23, 1991",1.0,1,1838,1
+Gregg Berhalter,Gregg Berhalter,1.0,1,1372,1
+Xinzhou,Xinzhou () is a prefecture-level city,0.33333333333333337,0,1591,1
+North Somercotes,North Somercotes,1.0,1,1277,1
+BNSF Railway,BNSF,0.6666666666666666,0,1738,1
+Scott Speedman portrays Michael Corvin in the Underworld film series.,Underworld,0.18181818181818182,0,1864,1
+Domesday Book,Domesday Book,1.0,1,1515,1
+United Kingdom,UK,0.0,0,1435,1
+more than 149,"more than 150 works, including five symphonies and eight operas.",0.30769230769230765,0,4430,1
+Apple A4,Apple A4,1.0,1,2012,1
+documentary,documentary,1.0,1,1792,1
+No,no,1.0,1,2488,1
+townships,cities,0.0,0,5366,1
+Nigeria women's national basketball team (Lady Tigers),National Basketball Association (NBA),0.36363636363636365,0,5921,1
+British,English,0.0,0,1267,1
+Zimbabwe,Zimbabwe,1.0,1,2017,1
+Dark Horse,Dark Horse,1.0,1,3404,1
+documentary films,documentary,0.6666666666666666,0,1787,1
+1843,1843,1.0,1,2167,1
+"The Hague, Netherlands","It is located in The Hague, Netherlands, and was established to support the Permanent Court of Justice",0.3,0,1746,1
+glam rock band,English glam rock band,0.8571428571428571,0,1803,1
+If My Friends Could See Me Now,If My Friends Could See Me Now,1.0,1,2102,1
+Stardust Resort and Casino,Stardust Resort and Casino,1.0,1,1362,1
+George Gipp,George Gipp,1.0,1,1837,1
+Clint Eastwood,Clint Eastwood,1.0,1,2475,1
+"April 2, 2011","April 2, 2011",1.0,1,1812,1
+deep house,Deep house,1.0,1,1985,1
+plants,plants,1.0,1,2364,1
+Benares gharana,Benares gharānā,0.5,0,1816,1
+Grand Old Party,Grand Old Party,1.0,1,1917,1
+"was named Pakistan's ODI Captain on February 9, 2017",He took up the Test captaincy,0.0,0,2652,1
+30 June to 22 July 2007,30 June to 22 July 2007,1.0,1,1935,1
+mallow family,mallow,0.6666666666666666,0,2163,1
+Nevada,Nevada,1.0,1,1695,1
+American Hairless Terrier,American Hairless Terrier,1.0,1,3135,1
+Istanbul,"Istanbul, Turkey",0.6666666666666666,0,1714,1
+The Borrowers,The Borrowers,1.0,1,1566,1
+Alfred Brendel,Alfred Brendel,1.0,1,2083,1
+ developed some of the first flying machines and achieved early aviation milestones,aircraft of any sort,0.125,0,1729,1
+Vincenzo Natali,Vincenzo Natali,1.0,1,1524,1
+League Two,League Two,1.0,1,1968,1
+Nemesis,Run-D.M.C.,0.0,0,2801,1
+the Australian 1974 World Cup squad,1974 World Cup squad,0.8,0,3685,1
+Michael Stipe,Michael Stipe,1.0,1,2206,1
+Morten Lauridsen,Morten Lauridsen,1.0,1,1847,1
+Denver Broncos,Denver Broncos,1.0,1,1159,1
+Yes,yes,1.0,1,1407,1
+Shia LaBeouf,Shia LaBeouf,1.0,1,2174,1
+"November 20, 1963","November 20, 1963",1.0,1,2064,1
+R2Bees,R2Bees,1.0,1,2147,1
+women,Ladies,0.0,0,999,1
+New Jersey,New Jersey,1.0,1,2707,1
+"January 20, 2016","January 20, 2016",1.0,1,1775,1
+TVB television,TVB television,1.0,1,2029,1
+Devil's Broom fire,the Devil's Broom fire,0.8571428571428571,0,2349,1
+Remington,Remington,1.0,1,2744,1
+Johnson & Johnson,Johnson & Johnson,1.0,1,1761,1
+Robin Pingeton,Robin Pingeton,1.0,1,2074,1
+Bob Iger,Bob Iger,1.0,1,10024,1
+Yes,no,0.0,0,770,1
+Villa Riachuelo,Villa Riachuelo,1.0,1,1635,1
+Suran,Shin Su-ran,0.6666666666666666,0,1623,1
+Jet,Jet,1.0,1,1840,1
+People's Republic of China,People's Republic of China,1.0,1,489,1
+ESPN,ESPN,1.0,1,1744,1
+2011,2011,1.0,1,1383,1
+Lewis's,Lewis's,1.0,1,2264,1
+Flinders Street railway station,Flinders Street railway station,1.0,1,2412,1
+Ottis Toole,Ottis Toole,1.0,1,1767,1
+Dog,dog,1.0,1,2441,1
+experience points,experience point,0.5,0,1907,1
+Mildred J. Hill,Mildred J. Hill,1.0,1,2028,1
+tennis,tennis,1.0,1,1522,1
+Ravi Udyawar,Ravi Udyawar,1.0,1,3610,1
+Dave Foley,Dave Foley,1.0,1,2284,1
+traditionalist root sounds with outlaw country views,"traditionalist root sounds (similar to neotraditional country) with the outspoken, care-free views of outlaw country",0.6363636363636364,0,1810,1
+Felix Dennis,Felix Dennis,1.0,1,2137,1
+ABC,ABC,1.0,1,1935,1
+"Texas Monthly is a regional general-interest magazine focused on Texas topics, while Lucky was a national fashion and lifestyle magazine that is now defunct.",first published in 2000,0.0,0,2368,1
+dog breeds,dog,0.6666666666666666,0,2398,1
+1983 Summer Universiade,1983 Summer Universiade,1.0,1,2066,1
+Erik Paulsen,Erik Paulsen,1.0,1,2407,1
+Grace Kelly,Grace Kelly,1.0,1,1743,1
+The Magic Roundabout,The Magic Roundabout,1.0,1,2470,1
+Taki's Magazine,Taki's Magazine,1.0,1,1718,1
+Galadriel,Galadriel,1.0,1,1465,1
+Bertolt Brecht and Elisabeth Hauptmann,Elisabeth Hauptmann,0.5714285714285715,0,2764,1
+Operation Paperclip,Operation Paperclip,1.0,1,1811,1
+Cleveland Indians,Indians,0.6666666666666666,0,8818,1
+Vicki Leekx,Vicki Leekx,1.0,1,1733,1
+1967 Atlantic hurricane season,1967 Atlantic hurricane season,1.0,1,2846,1
+film director,film director,1.0,1,1627,1
+yes,yes,1.0,1,1658,1
+1995,1995,1.0,1,1904,1
+Toyota Century,Toyota Century,1.0,1,3327,1
+Spain,Spain,1.0,1,1994,1
+Chinese names,Chinese name,0.5,0,2075,1
+"Franklin Square, New York",Garden City South,0.0,0,1963,1
+Margaret Mitchell,A. E. W. Mason,0.0,0,2040,1
+Jean Terrell,Jean Terrell,1.0,1,2196,1
+L'Étranger,L’Étranger,1.0,1,1222,1
+Chicago Outfit,Chicago Outfit,1.0,1,1915,1
+Kriss Akabusi,Kriss Akabusi,1.0,1,1357,1
+China,China,1.0,1,1388,1
+writer,writer,1.0,1,1607,1
+Tabletop games,game,0.0,0,2577,1
+Sarabande and Danse by Debussy,Debussy,0.33333333333333337,0,1301,1
+Marvel Comics,Marvel Comics,1.0,1,1741,1
+23 May 1990,23 May 1990,1.0,1,1715,1
+Richard Li,Richard Li,1.0,1,1829,1
+Mark Bickley,Mark Bickley,1.0,1,1678,1
+Iowa State University,Iowa State University,1.0,1,1892,1
+8 January 871,8 January 871,1.0,1,1980,1
+composing operas,composer,0.0,0,2416,1
+"To be, or not to be",Hamlet's,0.0,0,1636,1
+Saturday Night Live,Saturday Night Live,1.0,1,1912,1
+Shaquille O'Neal's All-Star Comedy Jam Tour,All-Star Comedy Jam Tour,0.8,0,1865,1
+1898,1898,1.0,1,1334,1
+defensive coordinator,defensive coordinator,1.0,1,2817,1
+American,American,1.0,1,1444,1
+Hubert H. Humphrey Metrodome,Hubert H. Humphrey Metrodome,1.0,1,2043,1
+Mayor Quimby,Mayor Quimby,1.0,1,2441,1
+The Dressmaker,The Dressmaker,1.0,1,1489,1
+Osho,Rajneesh,0.0,0,2283,1
+KPMG,KPMG,1.0,1,1503,1
+Comanche people,Comanche,0.6666666666666666,0,1751,1
+Lord Voldemort,Lord Voldemort,1.0,1,1985,1
+Gold Coast,Gold Coast,1.0,1,1807,1
+Walt Disney Pictures,Walt Disney Animation Studios,0.5714285714285715,0,3006,1
+Isis gathered The Freedom Force team,television,0.0,0,1992,1
+United States,United States,1.0,1,2326,1
+white goat,white goat,1.0,1,1418,1
+1983,1983,1.0,1,1485,1
+Yu-Gi-Oh! Trading Card Game,Yu-Gi-Oh,0.4,0,1629,1
+Bangladesh,Bangladesh,1.0,1,1758,1
+1931,1931,1.0,1,1820,1
+Casey Affleck,Caleb Casey McGuire Affleck-Boldt,0.3333333333333333,0,1872,1
+William Corlett,William Corlett,1.0,1,1421,1
+William H. Macy,was written by William H. Macy,0.6666666666666666,0,2498,1
+"August 30, 2003","August 30, 2003",1.0,1,1312,1
+No,yes,0.0,0,2212,1
+Russell T Davies,Russell T Davies,1.0,1,1377,1
+To provide emergency storage for fire protection and to pressurize the water supply system for distribution of potable water,"the distribution of potable water, and to provide emergency storage for fire protection",0.8125000000000001,0,1902,1
+full service independent studio,motion picture company,0.0,0,10594,1
+Ernst Röhm,Ernst Julius Günther Röhm,0.6666666666666666,0,1692,1
+Elise Stefanik,Republican Elise Stefanik,0.8,0,1681,1
+South Coast,South Coast,1.0,1,2025,1
+2000,2000,1.0,1,1808,1
+Glamour,Glamour,1.0,1,1700,1
+Alden Ehrenreich,Alden Ehrenreich,1.0,1,1910,1
+2007,2007,1.0,1,2183,1
+"January 1, 1972","January 1, 1972",1.0,1,1539,1
+United States,United States,1.0,1,1631,1
+Brasstown Bald,Brasstown Bald,1.0,1,1939,1
+National Alliance,National Alliance,1.0,1,1818,1
+1994,1994,1.0,1,2239,1
+Mike Leach,Michael Charles Leach,0.4,0,1706,1
+both are hunting breeds,used for hunting,0.28571428571428575,0,1979,1
+"yes, on national level",The 2017 Macanese general election took place on 17 September 2017 according to the provisions of the Basic Law of Macau.,0.08,0,1957,1
+Dieppe Raid,Dieppe Raid,1.0,1,2062,1
+"The film revolves around two trolls on a quest to save their village from destruction by the Bergens, creatures who eat trolls.","two trolls on a quest to save their village from destruction by the Bergens, creatures who eat trolls.",0.9,0,1914,1
+"December 9-10, 1985","December 9, 1985",0.6666666666666666,0,2107,1
+Tower of London,Tower of London,1.0,1,1737,1
+Adult Swim,Adult Swim,1.0,1,1844,1
+American,American,1.0,1,1501,1
+tennis player,tennis professional,0.5,0,1499,1
+No,no,1.0,1,2099,1
+Shrii Shrii Ánandamúrti,Shrii Shrii Ánandamúrti,1.0,1,2302,1
+Ben Affleck,Ben Affleck,1.0,1,1772,1
+film director,film director,1.0,1,1255,1
+Russell Crowe,Russell Crowe,1.0,1,1865,1
+In the Name of the Father,In the Name of the Father,1.0,1,1600,1
+InBev,InBev,1.0,1,1884,1
+Late Western Roman Empire,Western Roman Empire,0.8571428571428571,0,2481,1
+"Islam, Hinduism, Sikhism, Judaism, and Buddhism","Islam, Hinduism, Sikhism, Judaism and Buddhism",1.0,1,2742,1
+Chinese Journal of Physics,Chinese Journal of Physics,1.0,1,2355,1
+"both refer to the same place in the Town of East Hampton, Suffolk County, New York",United States,0.0,0,18600,1
+"The iBook was the first mass consumer product to offer Wi-Fi network connectivity, which was then branded by Apple as AirPort.",Apple,0.0909090909090909,0,2238,1
+Georgia O'Keeffe,Georgia Totto O'Keeffe,0.8,0,2882,1
+film directors,film director.,0.5,0,2122,1
+1959,1959,1.0,1,1121,1
+Yes,yes,1.0,1,1542,1
+William P. Young,William P. Young,1.0,1,2281,1
+No direct relationship is mentioned.,public,0.0,0,1964,1
+David Ignatow,David Ignatow,1.0,1,1530,1
+Cha Tae-hyun,Cha Tae-hyun,1.0,1,1650,1
+"Washington, D.C.","Washington, D.C.",1.0,1,1939,1
+Nas,Nas,1.0,1,2052,1
+South Africa,South Africa,1.0,1,1897,1
+Roy Spencer,Roy Spencer,1.0,1,1920,1
+Caleb Shomo,Caleb Joshua Shomo,0.8,0,2686,1
+Mickey Arthur,coached by Mickey Arthur,0.6666666666666666,0,2147,1
+Comedy Central,"Comedy Central named him #83 on the five-part miniseries ""100 Greatest Stand-ups of All Time"" .",0.23529411764705882,0,1973,1
+Brad Pitt,Brad Pitt,1.0,1,1279,1
+pitcher,pitcher,1.0,1,1585,1
+No,no,1.0,1,1943,1
+United States,American,0.0,0,1515,1
+British Army,the British Army,0.8,0,2745,1
+Rochdale A.C.F.,Rochdale Association Football Club,0.3333333333333333,0,2986,1
+2007,2007,1.0,1,3357,1
+weekly magazine and humor magazine,magazine,0.33333333333333337,0,2691,1
+Elizabeth Olsen,Elizabeth Olsen,1.0,1,4105,1
+Anti,Anti,1.0,1,2103,1
+Bindy Johal,Bindy Johal,1.0,1,2891,1
+1 estate,one estate,0.5,0,2509,1
+Marine Corps Air Station Yuma,Marine Corps Air Station Yuma,1.0,1,1763,1
+"2,902,400 square meters","Total space, 2,902,400 square meters",0.7499999999999999,0,2248,1
+A Charlie Brown Christmas,A Charlie Brown Christmas,1.0,1,5349,1
+St. Louis,independent city,0.0,0,1841,1
+QT: QueerTelevision,QueerTelevision,0.6666666666666666,0,1530,1
+Disney's Animal Kingdom,Disney's Animal Kingdom in the Walt Disney World Resort.,0.5,0,1554,1
+Derry,Derry,1.0,1,1403,1
+tennis player,tennis player,1.0,1,1107,1
+Gillette,Gillette,1.0,1,1575,1
+Philip Seymour Hoffman,Philip Seymour Hoffman,1.0,1,3210,1
+"Paradise, Nevada",Paradise,0.6666666666666666,0,1347,1
+5 April 1955,5 April 1955,1.0,1,1611,1
+Laveen,"Laveen, Arizona",0.6666666666666666,0,1661,1
+music industry,musician,0.0,0,2096,1
+"November 12, 2010","November 12, 2010",1.0,1,2420,1
+swimmer,swimmer,1.0,1,2168,1
+Marloes Coenen,Marloes Coenen,1.0,1,1338,1
+South Korea,South Korean,0.5,0,1821,1
+1999,1999,1.0,1,1732,1
+Queen of Iceland,Queen of Iceland,1.0,1,1286,1
+Japan,based in New York City,0.0,0,2458,1
+professional tennis players,professional tennis player,0.6666666666666666,0,3208,1
+United States,United States,1.0,1,1940,1
+"Famous Uttarakhandi singer who has sung Garhwali and Kumaoni music albums and is considered the ""Lata Mangeshkar"" of Uttarakhand",famous Uttarakhandi singer,0.2727272727272727,0,2667,1
+New Jersey State Police Museum,New Jersey State Police Museum,1.0,1,1490,1
+Professor Charles Xavier,Professor Charles Xavier,1.0,1,1724,1
+Samuel Alito,Samuel Anthony Alito Jr.,0.6666666666666666,0,2407,1
+Mutual organization,United States Supreme Court,0.0,0,7099,1
+Yes,yes,1.0,1,2153,1
+2004,2004,1.0,1,1312,1
+an American politician,American politician,0.8,0,1883,1
+1668,1668,1.0,1,1672,1
+cock of the game,cock of the game,1.0,1,1952,1
+England and Australia,England and Australia,1.0,1,10755,1
+As You Like It,As You Like It,1.0,1,1854,1
+Coal Creek War,Coal Creek War,1.0,1,1724,1
+energy drink,energy drink,1.0,1,1536,1
+2005,2005,1.0,1,1718,1
+"Kurt Russell, Cesar Romero, Joe Flynn and William Schallert",Kurt Russell,0.3636363636363636,0,1513,1
+Dahlonega,Dahlonega,1.0,1,2387,1
+Southern Baptist Convention,The Ethics & Religious Liberty Commission,0.0,0,2084,1
+physicist and astronaut,physicist and astronaut,1.0,1,1451,1
+Darkie Hutton,Envoy Richard 'Darkie’ Hutton,0.6666666666666666,0,1799,1
+The State of Georgia as part of the Georgia World Congress Center Authority,the State of Georgia as part of the Georgia World Congress Center Authority,1.0,1,4757,1
+two volumes,two,0.6666666666666666,0,2132,1
+Rob Quist,Robert Ernest Quist,0.4,0,2119,1
+Austria-Hungary,born in Austria-Hungary,0.5,0,1842,1
+"January 19, 1954","born January 19, 1954",0.8571428571428571,0,1933,1
+Battle of the Little Bighorn,Battle of the Little Bighorn,1.0,1,2465,1
+film director,film director,1.0,1,2720,1
+Falkland Islands Dependencies Survey (FIDS),FIDS,0.33333333333333337,0,1848,1
+Vladislav Galkin,Vladislav Galkin,1.0,1,1841,1
+Gábor Király,Gábor Ferenc Király,0.8,0,1580,1
+Celtic tribe,Celtic tribe,1.0,1,1646,1
+Mark Thompson,Mark John Thompson,0.8,0,3012,1
+"September 1, 2017","It was released on September 1, 2017 on Vital Records.",0.4615384615384615,0,1504,1
+Sexy Boy,Sexy Boy,1.0,1,1646,1
+novelist,novelist,1.0,1,2463,1
+Commack,Commack,1.0,1,2094,1
+King of New York,King of New York,1.0,1,1515,1
+The Patty Duke Show,"""The Patty Duke Show""",1.0,1,1947,1
+rock,rock,1.0,1,1782,1
+parliamentary privilege,the doctrine of Parliamentary privilege,0.5714285714285715,0,2342,1
+Sophia Amoruso,Sophia Christina Amoruso,0.8,0,1334,1
+SportAccord World Mind Games,SportAccord World Mind Games,1.0,1,2738,1
+1984,1984,1.0,1,1868,1
+Mitch Rapp,Mitch Rapp,1.0,1,1920,1
+Herbalife,Herbalife,1.0,1,1450,1
+Cartoon Network,Cartoon Network,1.0,1,2725,1
+Little Red Riding Hood,Cinderella,0.0,0,2737,1
+Trivor,Trivor,1.0,1,10833,1
+Stuart Sutcliffe,Stuart Sutcliffe,1.0,1,2324,1
+ETH Zurich,ETH Zurich,1.0,1,2115,1
+2004,2004,1.0,1,1896,1
+Yes,West,0.0,0,2372,1
+Carleton University,Carleton University,1.0,1,2233,1
+Castle Hill convict rebellion,Castle Hill convict rebellion,1.0,1,1998,1
+Pikotaro,Pikotaro,1.0,1,1806,1
+flowering plants,flowering plants,1.0,1,2222,1
+IndiGo,IndiGo,1.0,1,4587,1
+David Ross Fryer and John Barkley Means,Center for Advanced Studies In Engineering,0.0,0,4036,1
+Northumbria,Northumbria,1.0,1,13955,1
+Indian,Indian,1.0,1,1377,1
+Henry Clay and Stephen Douglas,Henry Clay,0.5714285714285715,0,1870,1
+No,yes,0.0,0,2921,1
+"August 21, 1971","August 21, 1971",1.0,1,1525,1
+Wendy's,Wendy's,1.0,1,2057,1
+Eugen Bleuler,Eugen Bleuler,1.0,1,1726,1
+Christmas comedy,comedy,0.6666666666666666,0,1556,1
+Sprechgesang,Sprechgesang,1.0,1,2266,1
+Steve and Becky,Steve and Becky,1.0,1,1468,1
+The A631 road runs over the Tinsley Viaduct.,England,0.0,0,1676,1
+Portugal. The Man,Portugal. The Man,1.0,1,1782,1
+Fire & Rescue NSW,Fire & Rescue NSW,1.0,1,1869,1
+Negasonic Teenage Warhead,Negasonic Teenage Warhead,1.0,1,1831,1
+She's Gotta Have It,She's Gotta Have It,1.0,1,1587,1
+DC Comics,DC Comics,1.0,1,1985,1
+Jimmy Eat World,Jimmy Eat World,1.0,1,1407,1
+17th Street Canal,17th Street Canal,1.0,1,1834,1
+William Calley,William Calley,1.0,1,2720,1
+Muammar Gaddafi,Muammar Gaddafi,1.0,1,1730,1
+Sukhoi Superjet 100,jet,0.0,0,1861,1
+1965,1907,0.0,0,6094,1
+Switzerland,Switzerland,1.0,1,1612,1
+Steve McQueen,"Terence Steven ""Steve"" McQueen",0.6666666666666666,0,1604,1
