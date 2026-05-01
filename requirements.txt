@@ -3,3 +3,4 @@ python-dotenv
 datasets
 evaluate
 pytest
+langchain

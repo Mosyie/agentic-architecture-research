@@ -50,3 +50,6 @@ class SingleAgent:
             "total_tokens": response.usage.total_tokens if response.usage else 0,
             "api_calls": 1
         }
+    
+if __name__ == "__main__":
+    print("SingleAgent is intended to be used from run_experiment_a1.py")
