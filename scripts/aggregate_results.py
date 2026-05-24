@@ -7,7 +7,7 @@ parser.add_argument(
     "--file",
     type=str,
     required=True,
-    help="CSV file name from results folder to aggregate (e.g. results/hotpotQa/single_agent_v2_hard.csv)"
+    help="CSV file name from results folder to aggregate (e.g. results/hotpotQa/baseline_hard.csv)"
 )
 args = parser.parse_args()
 

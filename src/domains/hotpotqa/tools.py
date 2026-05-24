@@ -1,5 +1,15 @@
+from pydantic import BaseModel, Field
+from langchain_core.tools import StructuredTool
+
 from src.core.tool_environment import ToolEnvironment
 
+
+class ListChunksArgs(BaseModel):
+    """No arguments."""
+
+
+class ReadContentChunkArgs(BaseModel):
+    chunk_id: int = Field(description="The chunk ID to read.")
 
 class HotpotQAToolEnvironment(ToolEnvironment):
 
@@ -20,37 +30,36 @@ class HotpotQAToolEnvironment(ToolEnvironment):
 
         return chunks
 
-    def tools_schema(self) -> list[dict]:
+    def as_langchain_tools(self) -> list[StructuredTool]:
+        """
+        Adapt this environment into LangChain StructuredTools.
+
+        The tools route through execute_tool(), so this class remains the
+        source of truth for tool behavior.
+        """
+
+        def list_chunks() -> list:
+            return self.execute_tool("list_chunks", {})
+
+        def read_content_chunk(chunk_id: int) -> dict:
+            return self.execute_tool(
+                "read_content_chunk",
+                {"chunk_id": chunk_id},
+            )
+
         return [
-            {
-                "type": "function",
-                "function": {
-                    "name": "list_chunks",
-                    "description": "List available context chunks for the current question.",
-                    "parameters": {
-                        "type": "object",
-                        "properties": {},
-                        "required": []
-                    }
-                }
-            },
-            {
-                "type": "function",
-                "function": {
-                    "name": "read_content_chunk",
-                    "description": "Read one context chunk by chunk_id.",
-                    "parameters": {
-                        "type": "object",
-                        "properties": {
-                            "chunk_id": {
-                                "type": "integer",
-                                "description": "The chunk ID to read."
-                            }
-                        },
-                        "required": ["chunk_id"]
-                    }
-                }
-            }
+            StructuredTool.from_function(
+                func=list_chunks,
+                name="list_chunks",
+                description="List available context chunks for the current question.",
+                args_schema=ListChunksArgs,
+            ),
+            StructuredTool.from_function(
+                func=read_content_chunk,
+                name="read_content_chunk",
+                description="Read one context chunk by chunk_id.",
+                args_schema=ReadContentChunkArgs,
+            ),
         ]
 
     def execute_tool(self, tool_name: str, arguments: dict) -> dict:

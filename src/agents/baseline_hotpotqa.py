@@ -1,11 +1,11 @@
 from src.core.llm_client import get_llm_client
 
-class SingleAgent:
+class BaseLineAgent:
     """
-    A1 - Single Agent (Baseline)
-    Single agent working on the input task.
+    Baseline
+    Single LLM working on the input task.
     """
-    def __init__(self, model_name: str = "zai-org/GLM-4.5-Air-FP8"):
+    def __init__(self, model_name: str = "Qwen/Qwen3.6-27B"):
         self.client = get_llm_client()
         self.model_name = model_name
         
@@ -50,6 +50,3 @@ class SingleAgent:
             "total_tokens": response.usage.total_tokens if response.usage else 0,
             "api_calls": 1
         }
-    
-if __name__ == "__main__":
-    print("SingleAgent is intended to be used from run_experiment_a1.py")
