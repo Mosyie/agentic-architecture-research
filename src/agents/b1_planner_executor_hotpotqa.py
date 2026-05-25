@@ -1,12 +1,13 @@
 import json
-from typing import Optional, TypedDict
+from typing import NamedTuple, Optional, TypedDict
 
-from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
-
-from langgraph.graph import StateGraph, START, END
 from langchain.agents import create_agent as _create_agent
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
+from langgraph.graph import END, START, StateGraph
+
 from src.core.llm_client import get_llm_client
 from src.core.metrics import llm_accounting
+
 
 EXECUTOR_SYSTEM_PROMPT = (
     "You are an Executor agent. You are given ONE narrow sub-question.\n"
@@ -17,6 +18,7 @@ EXECUTOR_SYSTEM_PROMPT = (
     "explanation, no raw chunk text. If the context does not contain the "
     "answer, reply exactly: NOT FOUND."
 )
+
 
 PLANNER_SYSTEM_PROMPT = (
     "You are a Planner agent solving a multi-hop question by delegating.\n"
@@ -39,47 +41,82 @@ PLANNER_SYSTEM_PROMPT = (
 )
 
 
-def _parse_planner_json(text: str) -> Optional[dict]:
-    """Best-effort parse of the planner's JSON reply (tolerates fences/prose)."""
-    if not text:
-        return None
-    cleaned = text.strip()
-    if cleaned.startswith("```"):
-        cleaned = cleaned.strip("`")
-        if cleaned.lower().startswith("json"):
-            cleaned = cleaned[4:]
-    try:
-        return json.loads(cleaned)
-    except json.JSONDecodeError:
-        pass
-    start, end = cleaned.find("{"), cleaned.rfind("}")
-    if start != -1 and end != -1 and end > start:
-        try:
-            return json.loads(cleaned[start:end + 1])
-        except json.JSONDecodeError:
-            return None
-    return None
+class PlannerDecision(TypedDict, total=False):
+    status: str
+    subquery: str
+    answer: str
 
 
-# ---------------------------------------------------------------------------
-# Shared graph state
-# ---------------------------------------------------------------------------
+class ScratchpadEntry(NamedTuple):
+    subquery: str
+    answer: str
 
-class PEState(TypedDict, total=False):
-    question: str            # the main HotpotQA question
-    scratchpad: list         # list of (subquery, exec_answer) the planner has seen
-    decision: dict           # planner's latest parsed decision
-    next_subquery: str       # sub-query to hand the executor this round
+
+class PlannerExecutorState(TypedDict, total=False):
+    question: str
+    scratchpad: list[ScratchpadEntry]
+    next_subquery: str
     final_answer: str
     total_tokens: int
     num_api_calls: int
     num_subqueries: int
-    planner_steps: int       # guard against infinite planner looping
+    planner_steps: int
     error: str
 
 
+def _parse_planner_json(text: str) -> Optional[PlannerDecision]:
+    """Parse the planner's JSON reply into a normalized PlannerDecision.
+
+    The prompt requires pure JSON, but this parser is still tolerant of
+    accidental markdown fences or surrounding prose. Returns None if the
+    reply cannot be validated as one of the two expected decision shapes.
+    """
+    if not text:
+        return None
+
+    cleaned = text.strip()
+
+    if cleaned.startswith("```json"):
+        cleaned = cleaned.removeprefix("```json").removesuffix("```").strip()
+    elif cleaned.startswith("```"):
+        cleaned = cleaned.removeprefix("```").removesuffix("```").strip()
+
+    try:
+        parsed = json.loads(cleaned)
+    except json.JSONDecodeError:
+        start = cleaned.find("{")
+        end = cleaned.rfind("}")
+
+        if start == -1 or end == -1 or end <= start:
+            return None
+
+        try:
+            parsed = json.loads(cleaned[start : end + 1])
+        except json.JSONDecodeError:
+            return None
+
+    if not isinstance(parsed, dict):
+        return None
+
+    status = parsed.get("status")
+
+    if status == "continue":
+        subquery = parsed.get("subquery")
+        if not isinstance(subquery, str) or not subquery.strip():
+            return None
+        return PlannerDecision(status="continue", subquery=subquery.strip())
+
+    if status == "done":
+        answer = parsed.get("answer")
+        if not isinstance(answer, str):
+            return None
+        return PlannerDecision(status="done", answer=answer.strip())
+
+    return None
+
+
 class PlannerExecutorAgent:
-    """Builds and runs the two-node planner/executor graph."""
+    """Two-node planner/executor graph for multi-hop question answering."""
 
     def __init__(
         self,
@@ -91,144 +128,175 @@ class PlannerExecutorAgent:
         self.executor_max_steps = executor_max_steps
         self.verbose = verbose
         self.llm = get_llm_client()
-        self._tool_env = None
-        self._graph = self._build_graph()
 
-    def _log(self, msg: str):
+    def _log(self, msg: str) -> None:
         if self.verbose:
             print(msg)
 
-    # --- node functions ----------------------------------------------------
-    def _planner_node(self, state: PEState) -> dict:
-        """Build the planner prompt from scratchpad, get one decision."""
+    def _planner_node(self, state: PlannerExecutorState) -> dict:
+        """Ask the planner for either the next subquery or the final answer.
+
+        On any failure (LLM error, unparseable reply) this returns an `error`
+        and no `next_subquery`/`final_answer`. The router keys off those, so
+        there is no need to fabricate a "done" decision to stop the graph.
+        """
         msgs = [
             SystemMessage(content=PLANNER_SYSTEM_PROMPT),
             HumanMessage(content=f"Main question: {state['question']}"),
         ]
 
-        for sub, ans in state.get("scratchpad", []):
-            msgs.append(AIMessage(content=json.dumps(
-                {"status": "continue", "subquery": sub}
-            )))
-            msgs.append(HumanMessage(content=(
-                f"Executor answer to '{sub}': {ans}\n"
-                "Decide the next sub-question or finish."
-            )))
+        for entry in state.get("scratchpad", []):
+            msgs.append(
+                AIMessage(
+                    content=json.dumps(
+                        {"status": "continue", "subquery": entry.subquery}
+                    )
+                )
+            )
+            msgs.append(
+                HumanMessage(
+                    content=(
+                        f"Executor answer to '{entry.subquery}': {entry.answer}\n"
+                        "Decide the next sub-question or finish."
+                    )
+                )
+            )
 
         try:
             ai = self.llm.invoke(msgs)
         except Exception as exc:
             return {
-                "decision": {"status": "done"},
-                "final_answer": "",
                 "error": f"Planner call failed: {type(exc).__name__}: {exc}",
-                "num_api_calls": state.get("num_api_calls", 0) + 1,
             }
 
         content = (ai.content or "").strip()
         self._log(f"\nPLANNER RAW: {content}")
 
-        decision = _parse_planner_json(content) or {
-            "status": "continue",
-            "subquery": "",
-        }
-
         planner_tokens, planner_calls = llm_accounting([ai])
 
         updates = {
-            "decision": decision,
             "total_tokens": state.get("total_tokens", 0) + planner_tokens,
             "num_api_calls": state.get("num_api_calls", 0) + planner_calls,
             "planner_steps": state.get("planner_steps", 0) + 1,
         }
 
-        if decision.get("status") == "done":
-            updates["final_answer"] = (decision.get("answer") or "").strip()
+        decision = _parse_planner_json(content)
+        if decision is None:
+            updates["error"] = f"Planner returned invalid JSON: {content}"
+            return updates
+
+        if decision["status"] == "done":
+            answer = decision.get("answer", "")
+            if not answer:
+                updates["error"] = "Planner finished with an empty answer."
+            else:
+                updates["final_answer"] = answer
         else:
-            updates["next_subquery"] = (decision.get("subquery") or "").strip()
+            updates["next_subquery"] = decision.get("subquery", "")
 
         return updates
 
-    def _executor_node(self, state: PEState) -> dict:
-        """Run the ReAct sub-agent on the current sub-query; append to scratchpad."""
-        sub_query = state.get("next_subquery", "").strip()
-        tool_env = self._tool_env  # set in invoke() before running the graph
+    def _executor_node(self, state: PlannerExecutorState, executor_agent) -> dict:
+        """Run the tool-using executor on the current subquery."""
+        subquery = state.get("next_subquery", "").strip()
 
-        if not sub_query:
-            ans = "NOT FOUND"
+        if not subquery:
             return {
-                "scratchpad": state.get("scratchpad", []) + [
-                    ("(empty sub-query)", ans)
-                ],
+                "scratchpad": state.get("scratchpad", [])
+                + [ScratchpadEntry("(empty sub-query)", "NOT FOUND")],
                 "num_subqueries": state.get("num_subqueries", 0) + 1,
+                "error": "Planner produced an empty subquery.",
             }
 
-        tools = tool_env.as_langchain_tools()
-        agent = _create_agent(self.llm, tools, system_prompt=EXECUTOR_SYSTEM_PROMPT)
-
-        self._log(f"--> DELEGATING SUB-QUERY: {sub_query}")
-        config = {"recursion_limit": self.executor_max_steps * 2 + 1}
+        self._log(f"--> DELEGATING SUB-QUERY: {subquery}")
 
         ans = "NOT FOUND"
         exec_tokens = 0
         exec_calls = 0
 
         try:
-            result = agent.invoke(
-                {"messages": [HumanMessage(content=sub_query)]},
-                config=config,
+            result = executor_agent.invoke(
+                {"messages": [HumanMessage(content=subquery)]},
+                config={"recursion_limit": self.executor_max_steps * 2 + 1},
             )
 
-            exec_tokens, exec_calls = llm_accounting(result["messages"])
+            messages = result.get("messages", [])
+            exec_tokens, exec_calls = llm_accounting(messages)
 
-            for m in reversed(result["messages"]):
-                if isinstance(m, AIMessage) and not getattr(m, "tool_calls", None):
-                    ans = (m.content or "").strip()
+            for message in reversed(messages):
+                if isinstance(message, AIMessage) and not getattr(
+                    message, "tool_calls", None
+                ):
+                    ans = (message.content or "").strip()
                     break
 
         except Exception as exc:
-            ans = f"[executor error: {type(exc).__name__}: {exc}]"
+            return {
+                "scratchpad": state.get("scratchpad", [])
+                + [ScratchpadEntry(subquery, "NOT FOUND")],
+                "total_tokens": state.get("total_tokens", 0) + exec_tokens,
+                "num_api_calls": state.get("num_api_calls", 0) + exec_calls,
+                "num_subqueries": state.get("num_subqueries", 0) + 1,
+                "error": f"Executor failed: {type(exc).__name__}: {exc}",
+            }
 
         self._log(f"<-- EXECUTOR ANSWER: {ans}")
+
         return {
-            "scratchpad": state.get("scratchpad", []) + [(sub_query, ans)],
+            "scratchpad": state.get("scratchpad", [])
+            + [ScratchpadEntry(subquery, ans)],
             "total_tokens": state.get("total_tokens", 0) + exec_tokens,
             "num_api_calls": state.get("num_api_calls", 0) + exec_calls,
             "num_subqueries": state.get("num_subqueries", 0) + 1,
         }
 
-    # --- router ------------------------------------------------------------
-    def _route_after_planner(self, state: PEState) -> str:
-        """Send to executor unless the planner is done or we've hit the cap."""
+    def _route_after_planner(self, state: PlannerExecutorState) -> str:
+        """Route to executor unless we errored, finished, or hit the step guard."""
         if state.get("error"):
             return "end"
-        decision = state.get("decision", {})
-        if decision.get("status") == "done":
+
+        if state.get("final_answer") is not None:
             return "end"
+
         if state.get("planner_steps", 0) >= self.max_planner_steps:
             return "end"
+
         return "executor"
 
-    def _build_graph(self):
-        g = StateGraph(PEState)
-        g.add_node("planner", self._planner_node)
-        g.add_node("executor", self._executor_node)
-        g.add_edge(START, "planner")
-        g.add_conditional_edges(
+    def _build_graph(self, executor_agent):
+        graph = StateGraph(PlannerExecutorState)
+
+        graph.add_node("planner", self._planner_node)
+
+        def executor_node(state: PlannerExecutorState) -> dict:
+            return self._executor_node(state, executor_agent)
+
+        graph.add_node("executor", executor_node)
+
+        graph.add_edge(START, "planner")
+        graph.add_conditional_edges(
             "planner",
             self._route_after_planner,
-            {"executor": "executor", "end": END},
+            {
+                "executor": "executor",
+                "end": END,
+            },
         )
-        g.add_edge("executor", "planner")  # loop back
-        return g.compile()
+        graph.add_edge("executor", "planner")
 
-    # --- public interface (matches A1) ------------------------------------
-    def invoke(self, question: str, tool_env) -> dict:
-        # The executor node needs the per-question tool_env. Graph state can't
-        # hold the live object cleanly, so we stash it on self for this run.
-        self._tool_env = tool_env
+        return graph.compile()
 
-        init: PEState = {
+    def invoke(self, question: str, tools) -> dict:
+        """Run the planner/executor graph for one question."""
+        executor_agent = _create_agent(
+            self.llm,
+            tools,
+            system_prompt=EXECUTOR_SYSTEM_PROMPT,
+        )
+
+        graph = self._build_graph(executor_agent)
+
+        initial_state: PlannerExecutorState = {
             "question": question,
             "scratchpad": [],
             "total_tokens": 0,
@@ -236,29 +304,40 @@ class PlannerExecutorAgent:
             "num_subqueries": 0,
             "planner_steps": 0,
         }
-        # recursion_limit caps total node visits; each planner+executor round
-        # is 2 visits, plus the final planner. Give generous headroom.
+
+        # Each planner step is up to two graph nodes (planner -> executor), so
+        # the graph-level recursion budget is ~2x the planner-step budget plus
+        # slack for the final planner pass and routing.
         config = {"recursion_limit": self.max_planner_steps * 2 + 5}
 
         try:
-            final_state = self._graph.invoke(init, config=config)
+            final_state = graph.invoke(initial_state, config=config)
         except Exception as exc:
-            return {"answer": "", "total_tokens": 0, "num_api_calls": 0,
-                    "error": f"Graph failed: {type(exc).__name__}: {exc}"}
-        finally:
-            self._tool_env = None
+            return {
+                "answer": "",
+                "total_tokens": 0,
+                "num_api_calls": 0,
+                "num_subqueries": 0,
+                "error": f"Graph failed: {type(exc).__name__}: {exc}",
+            }
 
         answer = final_state.get("final_answer", "")
         error = final_state.get("error", "")
-        if not answer and not error:
-            error = "No final answer produced (planner ended without 'done')"
 
-        out = {
+        if not answer and not error:
+            if final_state.get("planner_steps", 0) >= self.max_planner_steps:
+                error = "Maximum planner steps reached before final answer."
+            else:
+                error = "No final answer produced."
+
+        output = {
             "answer": answer,
             "total_tokens": final_state.get("total_tokens", 0),
             "num_api_calls": final_state.get("num_api_calls", 0),
             "num_subqueries": final_state.get("num_subqueries", 0),
         }
+
         if error:
-            out["error"] = error
-        return out
+            output["error"] = error
+
+        return output

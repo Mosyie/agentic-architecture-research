@@ -5,7 +5,7 @@ import pandas as pd
 
 from src.core.metrics import exact_match, f1_score_text
 from src.domains.hotpotqa.loader import load_hotpotqa_sample
-from src.domains.hotpotqa.tools import HotpotQAToolEnvironment
+from src.domains.hotpotqa.tools import make_hotpotqa_tools
 from src.agents.a1_single_hotpotqa_langgraph import SingleAgent
 from src.agents.b1_planner_executor_hotpotqa import PlannerExecutorAgent
 
@@ -62,14 +62,14 @@ def main():
     results = []
 
     for index, row in df.iterrows():
-        tool_env = HotpotQAToolEnvironment(row["context"])
+        tools = make_hotpotqa_tools(row["context"])
 
         print(f"\n--- Question {index + 1} (Difficulty: {row['level']}) ---")
         print(f"Q: {row['question']}")
 
         result = agent.invoke(
             question=row["question"],
-            tool_env=tool_env,
+            tools=tools,
         )
 
         prediction = result.get("answer", "")

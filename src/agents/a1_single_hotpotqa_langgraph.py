@@ -34,8 +34,7 @@ class SingleAgent:
         if self.verbose:
             print(message)
 
-    def invoke(self, question: str, tool_env) -> dict:
-        tools = tool_env.as_langchain_tools()
+    def invoke(self, question: str, tools) -> dict:
 
         agent = _create_agent(self.llm, tools, system_prompt=SYSTEM_PROMPT)
 
