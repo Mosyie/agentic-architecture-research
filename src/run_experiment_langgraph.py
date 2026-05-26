@@ -6,8 +6,10 @@ import pandas as pd
 from src.core.metrics                        import exact_match, f1_score_text
 from src.domains.hotpotqa.tools              import make_hotpotqa_tools
 from src.domains.hotpotqa.loader             import load_hotpotqa_sample
+
 from src.agents.a1_single_hotpotqa_langgraph import SingleAgent
 from src.agents.b1_planner_executor_hotpotqa import PlannerExecutorAgent
+from src.agents.b2_actor_critic_hotpotqa     import ActorCriticAgent
 
 
 NUM_SAMPLES = 5
@@ -20,6 +22,9 @@ def build_agent(architecture: str):
 
     if architecture == "b1":
         return PlannerExecutorAgent()
+
+    if architecture == 'b2':
+        return ActorCriticAgent()
 
     raise ValueError(f"Unsupported architecture: {architecture}")
 
@@ -39,9 +44,9 @@ def parse_args():
     parser.add_argument(
         "-a",
         "--architecture",
-        choices=["a1", "b1"],
+        choices=["a1", "b1", "b2"],
         required=True,
-        help="Agent architecture to run: a1=single agent, b1=planner/executor.",
+        help="Agent architecture to run: a1=single agent, b1=planner/executor, b2=actor/critic.",
     )
     return parser.parse_args()
 

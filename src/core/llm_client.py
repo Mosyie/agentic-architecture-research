@@ -24,7 +24,7 @@ def get_llm_client() -> ChatOpenAI:
         "model": "Qwen/Qwen3.6-27B",
         "temperature": 0,
         "timeout": 30,
-        "max_retries": 0,
+        "max_retries": 5,
         **get_llm_config(),
     }
     return ChatOpenAI(**params)

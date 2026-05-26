@@ -9,7 +9,6 @@ from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from src.core.metrics    import llm_accounting
 from src.core.llm_client import get_llm_client
 
-
 EXECUTOR_SYSTEM_PROMPT = (
     "You are an Executor agent. You are given ONE narrow sub-question.\n"
     "Use the available tools to inspect context chunks and find the answer.\n"
@@ -128,7 +127,8 @@ class PlannerExecutorAgent:
         self.max_planner_steps = max_planner_steps
         self.executor_max_steps = executor_max_steps
         self.verbose = verbose
-        self.llm = get_llm_client()
+        self.planner_llm  = get_llm_client()
+        self.executor_llm = get_llm_client()
 
     def _log(self, msg: str) -> None:
         if self.verbose:
@@ -164,7 +164,7 @@ class PlannerExecutorAgent:
             )
 
         try:
-            ai = self.llm.invoke(msgs)
+            ai = self.planner_llm.invoke(msgs)
         except Exception as exc:
             return {
                 "error": f"Planner call failed: {type(exc).__name__}: {exc}",
@@ -290,7 +290,7 @@ class PlannerExecutorAgent:
     def invoke(self, question: str, tools) -> dict:
         """Run the planner/executor graph for one question."""
         executor_agent = _create_agent(
-            self.llm,
+            self.executor_llm,
             tools,
             system_prompt=EXECUTOR_SYSTEM_PROMPT,
         )
