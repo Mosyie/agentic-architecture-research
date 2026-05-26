@@ -3,10 +3,9 @@ from pathlib import Path
 
 import pandas as pd
 
-from src.core.metrics import exact_match, f1_score_text
-from src.domains.hotpotqa.loader import load_hotpotqa_sample, format_prompt
+from src.core.metrics             import exact_match, f1_score_text
+from src.domains.hotpotqa.loader  import load_hotpotqa_sample, format_prompt
 from src.agents.baseline_hotpotqa import BaseLineAgent
-
 
 def parse_args():
     parser = ArgumentParser(description="Run the HotpotQA baseline agent experiment.")

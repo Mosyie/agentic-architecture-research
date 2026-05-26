@@ -1,6 +1,8 @@
 import pytest
 
-from metrics import exact_match, f1_score_text
+from metrics import exact_match, f1_score_text, llm_accounting
+
+from langchain_core.messages import AIMessage, HumanMessage
 
 exact_match_tests = [
     ("hello world", "hello world", 1),
@@ -69,6 +71,70 @@ f1_tests = [
     ("data data data data", "data", 0.4),
 ]
 
+llm_accounting_tests = [
+    (
+        [
+            AIMessage(content="a", usage_metadata={
+                "input_tokens": 0,
+                "output_tokens": 10,
+                "total_tokens": 10
+            }),
+            AIMessage(content="b", usage_metadata={
+                "input_tokens": 0,
+                "output_tokens": 20,
+                "total_tokens": 20
+            }),
+        ],
+        (30, 2),
+    ),
+
+    (
+        [
+            AIMessage(content="a", response_metadata={
+                "token_usage": {
+                    "input_tokens": 0,
+                    "output_tokens": 15,
+                    "total_tokens": 15
+                }
+            })
+        ],
+        (15, 1),
+    ),
+
+    (
+        [
+            AIMessage(content="a", usage_metadata={
+                "input_tokens": 0,
+                "output_tokens": 5,
+                "total_tokens": 5
+            }),
+            HumanMessage(content="user"),
+            AIMessage(content="b", response_metadata={
+                "token_usage": {
+                    "input_tokens": 0,
+                    "output_tokens": 7,
+                    "total_tokens": 7
+                }
+            }),
+        ],
+        (12, 2),
+    ),
+
+    (
+        [AIMessage(content="no metadata")],
+        (0, 1),
+    ),
+
+    (
+        [HumanMessage(content="hi"), HumanMessage(content="again")],
+        (0, 0),
+    ),
+
+    (
+        [],
+        (0, 0),
+    ),
+]
 
 # ---------- Tests ----------
 @pytest.mark.parametrize("prediction,reference,expected", exact_match_tests)
@@ -83,7 +149,8 @@ def test_f1(prediction, reference, expected):
     # Just give some error rate, this much doesn't really change the outcome.
     assert abs(score - expected) < 0.05
 
-
-
+@pytest.mark.parametrize("messages,expected", llm_accounting_tests)
+def test_llm_accounting(messages, expected):
+    assert llm_accounting(messages) == expected
 
 

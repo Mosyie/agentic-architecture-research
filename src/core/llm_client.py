@@ -1,9 +1,9 @@
 import os
 import dotenv
+
 from langchain_openai import ChatOpenAI
 
 dotenv.load_dotenv()
-
 
 def get_llm_config() -> dict:
     base_url = os.environ.get("API_URL")

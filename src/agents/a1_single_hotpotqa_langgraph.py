@@ -1,10 +1,11 @@
 import dotenv
 
+from langchain.agents        import create_agent as _create_agent
 from langchain_core.messages import HumanMessage, AIMessage
-from src.core.metrics import llm_accounting
 
-from langchain.agents import create_agent as _create_agent
+from src.core.metrics    import llm_accounting
 from src.core.llm_client import get_llm_client
+
 
 dotenv.load_dotenv()
 
@@ -27,7 +28,7 @@ class SingleAgent:
     ):
         self.max_steps = max_steps
         self.verbose = verbose
- 
+
         self.llm = get_llm_client()
 
     def _log(self, message: str):
