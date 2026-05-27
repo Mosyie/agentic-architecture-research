@@ -5,7 +5,7 @@ from typing import NamedTuple, TypedDict, Optional
 from langgraph.graph import StateGraph, START, END
 
 from langchain.agents        import create_agent as _create_agent
-from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
+from langchain_core.messages import HumanMessage, AIMessage, SystemMessage, ToolMessage
 
 from src.core.llm_client import get_llm_client
 from src.core.metrics    import llm_accounting
@@ -101,15 +101,16 @@ class ActorCriticAgent:
             print(msg)
 
     def _actor_node(self, state: ActorCriticState, actor_agent) -> dict:
-        messages = [
-            SystemMessage(content=ACTOR_SYSTEM_PROMPT),
-            HumanMessage(content=state["question"]),
-        ]
+        # NOTE: do not prepend SystemMessage here. `actor_agent` was built via
+        # `create_agent(..., system_prompt=ACTOR_SYSTEM_PROMPT)`, which injects
+        # the system message itself. Adding another one yields two system
+        # messages and the API rejects the request.
+        messages = [HumanMessage(content=state["question"])]
 
         # Inject critic feedback if retrying
         if state.get("critic_feedback"):
             messages.append(
-                AIMessage(
+                HumanMessage(
                     content=(
                         "Previous answer was rejected.\n"
                         f"Critic feedback: {state['critic_feedback']}\n"
@@ -126,9 +127,25 @@ class ActorCriticAgent:
 
             answer = ""
             for m in reversed(messages_out):
-                if isinstance(m, AIMessage):
+                if isinstance(m, AIMessage) and not getattr(m, "tool_calls", None):
                     answer = (m.content or "").strip()
                     break
+
+            new_entries: list[ScratchpadEntry] = []
+            tool_calls_by_id: dict[str, dict] = {}
+            for m in messages_out:
+                if isinstance(m, AIMessage):
+                    for tc in (getattr(m, "tool_calls", None) or []):
+                        tool_calls_by_id[tc["id"]] = tc
+                elif isinstance(m, ToolMessage):
+                    tc = tool_calls_by_id.get(m.tool_call_id)
+                    if tc is None:
+                        continue
+                    args_str = json.dumps(tc.get("args", {}), default=str, ensure_ascii=False)
+                    tool_input = f"{tc.get('name', '<tool>')}({args_str})"
+                    output = m.content
+                    tool_output = output if isinstance(output, str) else str(output)
+                    new_entries.append(ScratchpadEntry(tool_input=tool_input, tool_output=tool_output))
 
         except Exception as exc:
             return {
@@ -139,6 +156,7 @@ class ActorCriticAgent:
 
         return {
             "actor_answer": answer,
+            "scratchpad": state.get("scratchpad", []) + new_entries,
             "total_tokens": state.get("total_tokens", 0) + tokens,
             "num_api_calls": state.get("num_api_calls", 0) + calls,
             "actor_steps": state.get("actor_steps", 0) + 1,
@@ -147,13 +165,21 @@ class ActorCriticAgent:
 
 
     def _critic_node(self, state: ActorCriticState) -> dict:
+        scratchpad = state.get("scratchpad", []) or []
+        if scratchpad:
+            trace = "\n".join(
+                f"- {e.tool_input} -> {e.tool_output}" for e in scratchpad
+            )
+        else:
+            trace = "(no tool calls)"
+
         messages = [
             SystemMessage(content=CRITIC_SYSTEM_PROMPT),
             HumanMessage(
                 content=(
                     f"Question:\n{state['question']}\n\n"
                     f"Actor Answer:\n{state.get('actor_answer','')}\n\n"
-                    f"Tool Trace:\n{state.get('scratchpad','')}\n"
+                    f"Tool Trace:\n{trace}\n"
                 )
             ),
         ]
