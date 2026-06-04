@@ -184,7 +184,7 @@ class ActorCriticAgent:
         ]
 
         typed = self.critic_llm.with_structured_output(
-            CriticVerdict, include_raw=True
+            CriticVerdict, method="json_schema", include_raw=True
         )
 
         try:

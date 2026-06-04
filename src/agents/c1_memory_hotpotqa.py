@@ -176,7 +176,7 @@ class MemoryAgent(ActorCriticAgent):
         ]
 
         typed = self.reflector_llm.with_structured_output(
-            Reflection, include_raw=True
+            Reflection, method="json_schema", include_raw=True
         )
 
         try:
@@ -214,7 +214,7 @@ class MemoryAgent(ActorCriticAgent):
         ]
 
         typed = self.consolidator_llm.with_structured_output(
-            Consolidation, include_raw=True
+            Consolidation, method="json_schema", include_raw=True
         )
 
         try:
