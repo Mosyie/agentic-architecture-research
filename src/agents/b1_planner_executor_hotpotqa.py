@@ -1,6 +1,8 @@
 import json
 
-from typing import NamedTuple, Optional, TypedDict
+from typing import Literal, NamedTuple, Optional, TypedDict
+
+from pydantic import BaseModel, Field
 
 from langgraph.graph         import END, START, StateGraph
 from langchain.agents        import create_agent as _create_agent
@@ -31,30 +33,43 @@ PLANNER_SYSTEM_PROMPT = (
     "- Issue ONE sub-question at a time. Wait for the Executor's answer before\n"
     "  deciding the next one (later hops often depend on earlier answers).\n"
     "- Build understanding from the Executor's answers only.\n"
-    "- When you have enough information, output the final answer.\n"
-    "\n"
-    "You MUST reply with a single JSON object and nothing else, in one of two\n"
-    "forms:\n"
-    '  {"status": "continue", "subquery": "<one narrow sub-question>"}\n'
-    '  {"status": "done", "answer": "<short final answer, no explanation>"}\n'
-    "Do not wrap the JSON in markdown fences. Do not add text around it."
+    "- When you have enough information, output the final answer."
 )
 
 
-class PlannerDecision(TypedDict, total=False):
-    status: str
-    subquery: str
-    answer: str
+class PlannerDecision(BaseModel):
+    """Planner's next move: either delegate one sub-question, or finish."""
+
+    status: Literal["continue", "done"] = Field(
+        description=(
+            "'continue' to issue another sub-question, "
+            "'done' to return the final answer."
+        )
+    )
+    subquery: str = Field(
+        default="",
+        description=(
+            "When status is 'continue': one narrow sub-question for the "
+            "Executor. Empty string when finishing."
+        ),
+    )
+    answer: str = Field(
+        default="",
+        description=(
+            "When status is 'done': the short final answer with no "
+            "explanation. Empty string when continuing."
+        ),
+    )
 
 
-class ScratchpadEntry(NamedTuple):
+class SubqueryLogEntry(NamedTuple):
     subquery: str
     answer: str
 
 
 class PlannerExecutorState(TypedDict, total=False):
     question: str
-    scratchpad: list[ScratchpadEntry]
+    subquery_log: list[SubqueryLogEntry]
     next_subquery: str
     final_answer: str
     total_tokens: int
@@ -62,57 +77,6 @@ class PlannerExecutorState(TypedDict, total=False):
     num_subqueries: int
     planner_steps: int
     error: str
-
-
-def _parse_planner_json(text: str) -> Optional[PlannerDecision]:
-    """Parse the planner's JSON reply into a normalized PlannerDecision.
-
-    The prompt requires pure JSON, but this parser is still tolerant of
-    accidental markdown fences or surrounding prose. Returns None if the
-    reply cannot be validated as one of the two expected decision shapes.
-    """
-    if not text:
-        return None
-
-    cleaned = text.strip()
-
-    if cleaned.startswith("```json"):
-        cleaned = cleaned.removeprefix("```json").removesuffix("```").strip()
-    elif cleaned.startswith("```"):
-        cleaned = cleaned.removeprefix("```").removesuffix("```").strip()
-
-    try:
-        parsed = json.loads(cleaned)
-    except json.JSONDecodeError:
-        start = cleaned.find("{")
-        end = cleaned.rfind("}")
-
-        if start == -1 or end == -1 or end <= start:
-            return None
-
-        try:
-            parsed = json.loads(cleaned[start : end + 1])
-        except json.JSONDecodeError:
-            return None
-
-    if not isinstance(parsed, dict):
-        return None
-
-    status = parsed.get("status")
-
-    if status == "continue":
-        subquery = parsed.get("subquery")
-        if not isinstance(subquery, str) or not subquery.strip():
-            return None
-        return PlannerDecision(status="continue", subquery=subquery.strip())
-
-    if status == "done":
-        answer = parsed.get("answer")
-        if not isinstance(answer, str):
-            return None
-        return PlannerDecision(status="done", answer=answer.strip())
-
-    return None
 
 
 class PlannerExecutorAgent:
@@ -146,7 +110,7 @@ class PlannerExecutorAgent:
             HumanMessage(content=f"Main question: {state['question']}"),
         ]
 
-        for entry in state.get("scratchpad", []):
+        for entry in state.get("subquery_log", []):
             msgs.append(
                 AIMessage(
                     content=json.dumps(
@@ -163,15 +127,20 @@ class PlannerExecutorAgent:
                 )
             )
 
+        typed = self.planner_llm.with_structured_output(
+            PlannerDecision, include_raw=True
+        )
+
         try:
-            ai = self.planner_llm.invoke(msgs)
+            result = typed.invoke(msgs)
         except Exception as exc:
             return {
                 "error": f"Planner call failed: {type(exc).__name__}: {exc}",
             }
 
-        content = (ai.content or "").strip()
-        self._log(f"\nPLANNER RAW: {content}")
+        ai = result["raw"]
+        decision: Optional[PlannerDecision] = result["parsed"]
+        self._log(f"\nPLANNER: {decision!r}")
 
         planner_tokens, planner_calls = llm_accounting([ai])
 
@@ -181,19 +150,19 @@ class PlannerExecutorAgent:
             "planner_steps": state.get("planner_steps", 0) + 1,
         }
 
-        decision = _parse_planner_json(content)
         if decision is None:
-            updates["error"] = f"Planner returned invalid JSON: {content}"
+            updates["error"] = "Planner returned invalid structured output."
             return updates
 
-        if decision["status"] == "done":
-            answer = decision.get("answer", "")
+        if decision.status == "done":
+            answer = (decision.answer or "").strip()
             if not answer:
                 updates["error"] = "Planner finished with an empty answer."
             else:
                 updates["final_answer"] = answer
         else:
-            updates["next_subquery"] = decision.get("subquery", "")
+            subquery = (decision.subquery or "").strip()
+            updates["next_subquery"] = subquery
 
         return updates
 
@@ -203,8 +172,8 @@ class PlannerExecutorAgent:
 
         if not subquery:
             return {
-                "scratchpad": state.get("scratchpad", [])
-                + [ScratchpadEntry("(empty sub-query)", "NOT FOUND")],
+                "subquery_log": state.get("subquery_log", [])
+                + [SubqueryLogEntry("(empty sub-query)", "NOT FOUND")],
                 "num_subqueries": state.get("num_subqueries", 0) + 1,
                 "error": "Planner produced an empty subquery.",
             }
@@ -233,8 +202,8 @@ class PlannerExecutorAgent:
 
         except Exception as exc:
             return {
-                "scratchpad": state.get("scratchpad", [])
-                + [ScratchpadEntry(subquery, "NOT FOUND")],
+                "subquery_log": state.get("subquery_log", [])
+                + [SubqueryLogEntry(subquery, "NOT FOUND")],
                 "total_tokens": state.get("total_tokens", 0) + exec_tokens,
                 "num_api_calls": state.get("num_api_calls", 0) + exec_calls,
                 "num_subqueries": state.get("num_subqueries", 0) + 1,
@@ -244,8 +213,8 @@ class PlannerExecutorAgent:
         self._log(f"<-- EXECUTOR ANSWER: {ans}")
 
         return {
-            "scratchpad": state.get("scratchpad", [])
-            + [ScratchpadEntry(subquery, ans)],
+            "subquery_log": state.get("subquery_log", [])
+            + [SubqueryLogEntry(subquery, ans)],
             "total_tokens": state.get("total_tokens", 0) + exec_tokens,
             "num_api_calls": state.get("num_api_calls", 0) + exec_calls,
             "num_subqueries": state.get("num_subqueries", 0) + 1,
@@ -299,7 +268,7 @@ class PlannerExecutorAgent:
 
         initial_state: PlannerExecutorState = {
             "question": question,
-            "scratchpad": [],
+            "subquery_log": [],
             "total_tokens": 0,
             "num_api_calls": 0,
             "num_subqueries": 0,

@@ -10,6 +10,7 @@ from src.domains.hotpotqa.loader             import load_hotpotqa_sample
 from src.agents.a1_single_hotpotqa_langgraph import SingleAgent
 from src.agents.b1_planner_executor_hotpotqa import PlannerExecutorAgent
 from src.agents.b2_actor_critic_hotpotqa     import ActorCriticAgent
+from src.agents.c1_memory_hotpotqa           import MemoryAgent
 
 
 NUM_SAMPLES = 5
@@ -25,6 +26,9 @@ def build_agent(architecture: str):
 
     if architecture == 'b2':
         return ActorCriticAgent()
+
+    if architecture == "c1":
+        return MemoryAgent()
 
     raise ValueError(f"Unsupported architecture: {architecture}")
 
@@ -44,9 +48,9 @@ def parse_args():
     parser.add_argument(
         "-a",
         "--architecture",
-        choices=["a1", "b1", "b2"],
+        choices=["a1", "b1", "b2", "c1"],
         required=True,
-        help="Agent architecture to run: a1=single agent, b1=planner/executor, b2=actor/critic.",
+        help="Agent architecture to run: a1=single agent, b1=planner/executor, b2=actor/critic, c1=actor/critic+memory.",
     )
     return parser.parse_args()
 
