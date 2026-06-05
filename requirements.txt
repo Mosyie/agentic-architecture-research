@@ -6,3 +6,11 @@ pytest
 langchain
 langchain-openai
 langgraph
+
+# MiniWoB++ domain (interactive UI benchmark).
+# `miniwob` drives a real Chromium browser via Selenium, so a matching
+# Chrome/Chromium + chromedriver must be installed on the host separately
+# (not pip-installable).
+gymnasium
+miniwob
+selenium

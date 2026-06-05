@@ -18,8 +18,17 @@ def get_llm_config() -> dict:
     return {"base_url": base_url, "api_key": api_key}
 
 
-def get_llm_client() -> ChatOpenAI:
-    """Returns a configured LangChain chat model for the endpoint"""
+def get_llm_client():
+    """Returns a configured LangChain chat model for the endpoint.
+
+    Set the MOCK_LLM env var to get a network-free scripted model instead —
+    useful for smoke-testing the pipeline when the LLM endpoint is down.
+    """
+    if os.environ.get("MOCK_LLM"):
+        from src.core.mock_llm import MockToolCallingChat
+
+        return MockToolCallingChat()
+
     params = {
         "model": "Qwen/Qwen3.6-27B",
         "temperature": 0,

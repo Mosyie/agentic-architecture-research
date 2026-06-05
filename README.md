@@ -83,7 +83,7 @@ Convert a natural language instruction and dynamic UI state into a sequence of a
         - F1 Score
     - MiniWoB++
         - Action count
-        - Success Rate (% tasks completed)
+        - Average reward
 2. Cost
     - Total tokens used
     - Number of API calls
