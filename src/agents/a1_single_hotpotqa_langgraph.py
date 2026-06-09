@@ -5,6 +5,7 @@ from langchain_core.messages import HumanMessage, AIMessage
 
 from src.core.metrics    import llm_accounting
 from src.core.llm_client import get_llm_client
+from src.core.run_logger import format_action_trace
 
 
 dotenv.load_dotenv()
@@ -24,16 +25,10 @@ class SingleAgent:
     def __init__(
         self,
         max_steps: int = 10,
-        verbose: bool = False,
     ):
         self.max_steps = max_steps
-        self.verbose = verbose
 
         self.llm = get_llm_client()
-
-    def _log(self, message: str):
-        if self.verbose:
-            print(message)
 
     def invoke(self, question: str, tools) -> dict:
 
@@ -60,9 +55,7 @@ class SingleAgent:
 
         messages = result["messages"]
 
-        if self.verbose:
-            for m in messages:
-                self._log(repr(m))
+        print(format_action_trace(messages))
 
         total_tokens, num_api_calls = llm_accounting(messages)
 

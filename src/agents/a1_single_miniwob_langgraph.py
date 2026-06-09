@@ -3,17 +3,24 @@ import dotenv
 from langchain.agents        import create_agent as _create_agent
 from langchain_core.messages import HumanMessage
 
-from src.core.metrics    import llm_accounting
-from src.core.llm_client import get_llm_client
+from src.core.metrics     import llm_accounting
+from src.core.llm_client  import get_llm_client
+from src.core.run_logger  import format_action_trace
 
 
 dotenv.load_dotenv()
 
 SYSTEM_PROMPT = (
     "You are a web UI agent that completes tasks on a small web page.\n"
-    "You are given an instruction and a numbered list of interactable DOM elements, "
-    "each with a ref id, tag, text, and value.\n"
-    "Use the tools to act: click_element(ref) to click, type_text(text, ref) to enter text.\n"
+    "You are given an instruction and a list of interactable DOM elements, each "
+    "with a ref id, HTML tag, an optional #id, text, (for inputs) a value, and "
+    "its position as (left,top widthxheight): the top-left corner and the "
+    "width x height size, in page pixels.\n"
+    "Use the tools to act: click_element(ref) to click, type_text(text, ref) to enter text, "
+    "press_key(key) to press a key (or key combinations) on the focused element, "
+    "drag(sx, sy, tx, ty) to drag from page point (sx,sy) to (tx,ty).\n"
+    "drag coordinates are page pixels in the same system as the shown positions; to "
+    "grab or drop on an element, aim at its center, (left + width/2, top + height/2).\n"
     "After each action you receive an updated element list. Inspect it and continue.\n"
     "Refer to elements only by the ref ids shown in the latest observation.\n"
     "Take the minimum actions needed to satisfy the instruction, then stop.\n"
@@ -27,16 +34,10 @@ class SingleAgent:
     def __init__(
         self,
         max_steps: int = 15,
-        verbose: bool = False,
     ):
         self.max_steps = max_steps
-        self.verbose = verbose
 
         self.llm = get_llm_client()
-
-    def _log(self, message: str):
-        if self.verbose:
-            print(message)
 
     def invoke(self, instruction: str, tools) -> dict:
 
@@ -47,7 +48,11 @@ class SingleAgent:
         # We give 2x headroom plus a margin so the limit isn't hit before
         # max_steps real interaction turns. The tools also short-circuit once
         # the episode terminates, so this is an upper bound, not a target.
-        config = {"recursion_limit": self.max_steps * 2 + 1}
+        #
+        # max_concurrency=1 makes the ToolNode run batched tool calls one at a
+        # time in the order the model emitted them (its thread pool is sized to
+        # 1 worker), so a single browser isn't driven by parallel actions.
+        config = {"recursion_limit": self.max_steps * 2 + 1, "max_concurrency": 1}
 
         try:
             result = agent.invoke(
@@ -63,9 +68,7 @@ class SingleAgent:
 
         messages = result["messages"]
 
-        if self.verbose:
-            for m in messages:
-                self._log(repr(m))
+        print(format_action_trace(messages))
 
         total_tokens, num_api_calls = llm_accounting(messages)
 

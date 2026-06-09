@@ -112,9 +112,8 @@ class MemoryAgent(ActorCriticAgent):
         self,
         frozen_rules_path: Optional[Union[str, Path]] = DEFAULT_FROZEN_RULES_PATH,
         max_rounds: int = 5,
-        verbose: bool = False,
     ):
-        super().__init__(max_rounds=max_rounds, verbose=verbose)
+        super().__init__(max_rounds=max_rounds)
 
         self.reflector_llm    = get_llm_client()
         self.consolidator_llm = get_llm_client()
@@ -182,7 +181,7 @@ class MemoryAgent(ActorCriticAgent):
         try:
             result = typed.invoke(messages)
         except Exception as exc:
-            self._log(f"[REFLECTOR] failed: {type(exc).__name__}: {exc}")
+            print(f"[REFLECTOR] failed: {type(exc).__name__}: {exc}")
             return None, 0, 0
 
         ai = result["raw"]
@@ -190,7 +189,7 @@ class MemoryAgent(ActorCriticAgent):
         tokens, calls = llm_accounting([ai])
 
         rule = parsed.rule.strip() if (parsed and parsed.rule) else None
-        self._log(f"[REFLECTOR] {rule!r}")
+        print(f"[REFLECTOR] {rule!r}")
         return (rule or None), tokens, calls
 
     def consolidate(
@@ -220,7 +219,7 @@ class MemoryAgent(ActorCriticAgent):
         try:
             result = typed.invoke(messages)
         except Exception as exc:
-            self._log(f"[CONSOLIDATOR] failed: {type(exc).__name__}: {exc}")
+            print(f"[CONSOLIDATOR] failed: {type(exc).__name__}: {exc}")
             return [], 0, 0
 
         ai = result["raw"]
@@ -228,7 +227,7 @@ class MemoryAgent(ActorCriticAgent):
         tokens, calls = llm_accounting([ai])
 
         if parsed is None or not parsed.rules:
-            self._log(
+            print(
                 "[CONSOLIDATOR] structured output missing; "
                 "returning raw rules truncated to top_n"
             )

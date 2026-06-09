@@ -86,17 +86,11 @@ class PlannerExecutorAgent:
         self,
         max_planner_steps: int = 8,
         executor_max_steps: int = 10,
-        verbose: bool = False,
     ):
         self.max_planner_steps = max_planner_steps
         self.executor_max_steps = executor_max_steps
-        self.verbose = verbose
         self.planner_llm  = get_llm_client()
         self.executor_llm = get_llm_client()
-
-    def _log(self, msg: str) -> None:
-        if self.verbose:
-            print(msg)
 
     def _planner_node(self, state: PlannerExecutorState) -> dict:
         """Ask the planner for either the next subquery or the final answer.
@@ -140,7 +134,7 @@ class PlannerExecutorAgent:
 
         ai = result["raw"]
         decision: Optional[PlannerDecision] = result["parsed"]
-        self._log(f"\nPLANNER: {decision!r}")
+        print(f"\nPLANNER: {decision!r}")
 
         planner_tokens, planner_calls = llm_accounting([ai])
 
@@ -178,7 +172,7 @@ class PlannerExecutorAgent:
                 "error": "Planner produced an empty subquery.",
             }
 
-        self._log(f"--> DELEGATING SUB-QUERY: {subquery}")
+        print(f"--> DELEGATING SUB-QUERY: {subquery}")
 
         ans = "NOT FOUND"
         exec_tokens = 0
@@ -210,7 +204,7 @@ class PlannerExecutorAgent:
                 "error": f"Executor failed: {type(exc).__name__}: {exc}",
             }
 
-        self._log(f"<-- EXECUTOR ANSWER: {ans}")
+        print(f"<-- EXECUTOR ANSWER: {ans}")
 
         return {
             "subquery_log": state.get("subquery_log", [])

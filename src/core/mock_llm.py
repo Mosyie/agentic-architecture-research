@@ -25,10 +25,18 @@ class MockToolCallingChat(BaseChatModel):
     """Scripted tool-calling chat model (no network)."""
 
     max_tool_calls: int = 2
+    structured_tool_name: str | None = None
 
     def bind_tools(self, tools, **kwargs):
-        # The script only ever calls click_element, so we ignore the bound
-        # tool list and just return self.
+        # `with_structured_output` binds the schema as a tool and passes
+        # `ls_structured_output_format`. Detect that and remember the schema's
+        # tool name so `_generate` can emit a matching structured tool call
+        # (used by the B1 planner). Otherwise (executor click/type tools) we
+        # ignore the bound list and keep the scripted click behavior.
+        if "ls_structured_output_format" in kwargs and tools:
+            schema = tools[0]
+            name = getattr(schema, "__name__", None) or "output"
+            return self.model_copy(update={"structured_tool_name": name})
         return self
 
     @staticmethod
@@ -47,13 +55,39 @@ class MockToolCallingChat(BaseChatModel):
             if isinstance(message, AIMessage) and message.tool_calls
         )
 
+    @staticmethod
+    def _has_prior_report(messages) -> bool:
+        return any(
+            isinstance(m, HumanMessage)
+            and "Executor report for" in (m.content if isinstance(m.content, str) else "")
+            for m in messages
+        )
+
     def _generate(self, messages, stop=None, run_manager=None, **kwargs) -> ChatResult:
+        usage = {"input_tokens": 10, "output_tokens": 5, "total_tokens": 15}
+
+        # Structured-output path (B1 planner): emit one sub-step, then finish.
+        if self.structured_tool_name:
+            if self._has_prior_report(messages):
+                args = {"status": "done", "substep": ""}
+            else:
+                args = {
+                    "status": "continue",
+                    "substep": "Click the first interactable element",
+                }
+            message = AIMessage(
+                content="",
+                tool_calls=[
+                    {"name": self.structured_tool_name, "args": args, "id": "call_planner"}
+                ],
+                usage_metadata=usage,
+            )
+            return ChatResult(generations=[ChatGeneration(message=message)])
+
         text = self._latest_observation_text(messages)
         prior_calls = self._count_prior_tool_calls(messages)
         finished = "Episode finished" in text or "already finished" in text
         refs = _REF_RE.findall(text)
-
-        usage = {"input_tokens": 10, "output_tokens": 5, "total_tokens": 15}
 
         if finished or prior_calls >= self.max_tool_calls or not refs:
             message = AIMessage(content="done", usage_metadata=usage)

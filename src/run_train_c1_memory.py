@@ -15,7 +15,6 @@ REFLECTION_F1_THRESHOLD = 0.5
 TEST_SET_SIZE = 500
 TOP_N = 7
 SEED = 42
-VERBOSE = True
 NUM_TRAIN_SAMPLES = 100
 MEMORY_DIR = "memory/c1"
 
@@ -101,7 +100,7 @@ def main():
         f"(per level: {per_level_counts})."
     )
 
-    agent = MemoryAgent(frozen_rules_path=None, verbose=VERBOSE)
+    agent = MemoryAgent(frozen_rules_path=None)
 
     raw_rules: list[str] = []
     log_rows: list[dict] = []

@@ -1,3 +1,5 @@
+import functools
+
 from pydantic import BaseModel, Field
 from langchain_core.tools import StructuredTool
 
@@ -5,6 +7,8 @@ from src.domains.miniwob.env import (
     format_observation,
     execute_click,
     execute_type,
+    execute_press_key,
+    execute_drag,
 )
 
 
@@ -17,12 +21,26 @@ class TypeTextArgs(BaseModel):
     ref: int = Field(description="The ref id of the input element to focus and type into.")
 
 
-def make_miniwob_tools(env, episode_state: dict) -> list[StructuredTool]:
-    """Build click/type tools that step `env` and record progress in `episode_state`.
+class DragArgs(BaseModel):
+    sx: int = Field(description="X pixel to press the mouse down at (pickup).")
+    sy: int = Field(description="Y pixel to press the mouse down at (pickup).")
+    tx: int = Field(description="X pixel to release the mouse at (drop).")
+    ty: int = Field(description="Y pixel to release the mouse at (drop).")
 
-    `episode_state` is the runner-owned mutable dict:
-        {"last_reward": 0.0, "terminated": False, "truncated": False, "num_actions": 0}
-    """
+
+class PressKeyArgs(BaseModel):
+    key: str = Field(
+        description=(
+            "Exact key token to press on the focused element. Special keys are "
+            "angle-bracketed: <Enter>, <Backspace>, <Tab>, <Space>, <Delete>, "
+            "<ArrowUp>, <ArrowDown>, <ArrowLeft>, <ArrowRight>. Ctrl combos are not "
+            "bracketed: C-a, C-c, C-x, C-v. Use type_text for characters."
+        )
+    )
+
+
+def make_miniwob_tools(env, episode_state: dict) -> list[StructuredTool]:
+    """Build the LLM tools for one episode, bound to its `env` and `episode_state`."""
 
     def _apply(step_result) -> str:
         obs, reward, terminated, truncated, _info = step_result
@@ -40,23 +58,35 @@ def make_miniwob_tools(env, episode_state: dict) -> list[StructuredTool]:
 
         return format_observation(obs)
 
-    def click_element(ref: int) -> str:
-        if episode_state["terminated"] or episode_state["truncated"]:
-            return "Episode already finished."
+    # max_concurrency=1 (agent config) serializes batched tool calls, so the
+    # single browser is never driven in parallel.
+    def _tool(action):
+        """Guard if the episode ended, apply the step result, surface errors as text."""
+        @functools.wraps(action)
+        def wrapped(*args, **kwargs):
+            if episode_state["terminated"] or episode_state["truncated"]:
+                return "Episode already finished."
+            try:
+                return _apply(action(*args, **kwargs))
+            except Exception as exc:
+                return f"Error: {type(exc).__name__}: {exc}"
+        return wrapped
 
-        try:
-            return _apply(execute_click(env, ref))
-        except Exception as exc:
-            return f"Error: {type(exc).__name__}: {exc}"
+    @_tool
+    def click_element(ref: int):
+        return execute_click(env, ref)
 
-    def type_text(text: str, ref: int) -> str:
-        if episode_state["terminated"] or episode_state["truncated"]:
-            return "Episode already finished."
+    @_tool
+    def type_text(text: str, ref: int):
+        return execute_type(env, text, ref)
 
-        try:
-            return _apply(execute_type(env, text, ref))
-        except Exception as exc:
-            return f"Error: {type(exc).__name__}: {exc}"
+    @_tool
+    def press_key(key: str):
+        return execute_press_key(env, key)
+
+    @_tool
+    def drag(sx: int, sy: int, tx: int, ty: int):
+        return execute_drag(env, sx, sy, tx, ty)
 
     return [
         StructuredTool.from_function(
@@ -70,5 +100,22 @@ def make_miniwob_tools(env, episode_state: dict) -> list[StructuredTool]:
             name="type_text",
             description="Focus the input element with the given ref and type text into it.",
             args_schema=TypeTextArgs,
+        ),
+        StructuredTool.from_function(
+            func=press_key,
+            name="press_key",
+            description="Press a key token on the currently focused element.",
+            args_schema=PressKeyArgs,
+        ),
+        StructuredTool.from_function(
+            func=drag,
+            name="drag",
+            description=(
+                "Drag from one page point to another: press at (sx, sy) and release "
+                "at (tx, ty), in page pixels matching the shown (left,top widthxheight). "
+                "To grab or drop on an element, aim at its center: "
+                "(left + width/2, top + height/2)."
+            ),
+            args_schema=DragArgs,
         ),
     ]

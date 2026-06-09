@@ -11,6 +11,9 @@ langgraph
 # `miniwob` drives a real Chromium browser via Selenium, so a matching
 # Chrome/Chromium + chromedriver must be installed on the host separately
 # (not pip-installable).
+# miniwob is pinned: env.py relies on serialize_dom_element returning a plain
+# dict with geometry as length-1 np.float32 arrays (see observation.py). The
+# observation reader is written to exactly that shape -- don't bump unverified.
 gymnasium
-miniwob
+miniwob==1.0
 selenium

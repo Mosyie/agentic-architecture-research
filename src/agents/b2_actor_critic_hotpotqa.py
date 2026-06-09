@@ -93,15 +93,10 @@ class ActorCriticAgent:
     to inject additional guidance without re-implementing the graph.
     """
 
-    def __init__(self, max_rounds: int = 5, verbose: bool = False):
+    def __init__(self, max_rounds: int = 5):
         self.actor_llm  = get_llm_client()
         self.critic_llm = get_llm_client()
         self.max_rounds = max_rounds
-        self.verbose = verbose
-
-    def _log(self, msg: str):
-        if self.verbose:
-            print(msg)
 
     @property
     def actor_system_prompt(self) -> str:
@@ -158,7 +153,7 @@ class ActorCriticAgent:
                 "error": f"Actor failed: {type(exc).__name__}: {exc}"
             }
 
-        self._log(f"[ACTOR] {answer}")
+        print(f"[ACTOR] {answer}")
 
         return {
             "actor_answer": answer,
@@ -200,7 +195,7 @@ class ActorCriticAgent:
 
         ai = result["raw"]
         verdict: Optional[CriticVerdict] = result["parsed"]
-        self._log(f"[CRITIC] {verdict!r}")
+        print(f"[CRITIC] {verdict!r}")
 
         tokens, calls = llm_accounting([ai])
 
