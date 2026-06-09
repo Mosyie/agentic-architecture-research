@@ -1,0 +1,11 @@
+task,episode,seed,reward,num_actions,total_tokens,num_api_calls,error
+drag-shapes,0,545477,1.0,5,12350,6,
+drag-shapes-2,0,545477,0.38,6,9525,3,
+copy-paste,0,545477,1.0,6,12135,7,
+click-checkboxes-large,0,545477,1.0,12,21610,3,
+click-collapsible-2,0,545477,1.0,3,6446,4,
+click-widget,0,545477,1.0,1,2646,2,
+email-inbox-forward,0,545477,1.0,4,13350,6,
+use-autocomplete,0,545477,0.0,5,11437,6,
+search-engine,0,545477,1.0,3,8466,5,
+navigate-tree,0,545477,1.0,2,4384,3,

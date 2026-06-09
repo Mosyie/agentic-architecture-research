@@ -8,7 +8,6 @@ hard = [
     "click-checkboxes-soft",
     "click-menu-2",
     "copy-paste-2",
-    "daily-calendar",
     "terminal",
     "social-media",
     "guess-number",

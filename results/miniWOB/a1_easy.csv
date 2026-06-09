@@ -1,0 +1,13 @@
+task,episode,seed,reward,num_actions,total_tokens,num_api_calls,error
+drag-box,0,232297,1.0,2,4582,3,
+drag-circle,0,232297,1.0,2,4008,3,
+drag-single-shape,0,232297,1.0,2,4041,3,
+grid-coordinate,0,232297,1.0,1,4051,2,
+login-user,0,232297,1.0,3,3141,2,
+click-button,0,232297,1.0,1,2572,2,
+email-inbox-delete,0,232297,1.0,1,3284,2,
+text-transform,0,232297,1.0,2,3736,2,
+simple-arithmetic,0,232297,1.0,2,4098,3,
+simple-algebra,0,232297,1.0,2,4170,3,
+read-table-2,0,232297,1.0,3,6391,3,
+focus-text-2,0,232297,1.0,1,2794,2,
