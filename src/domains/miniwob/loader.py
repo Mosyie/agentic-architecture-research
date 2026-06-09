@@ -36,7 +36,6 @@ easy = [
     "grid-coordinate",
     "login-user",
     "click-button",
-    "click-menu",
     "email-inbox-delete",
     "text-transform",
     "simple-arithmetic",
