@@ -1,7 +1,6 @@
 task,episode,seed,reward,num_actions,total_tokens,num_api_calls,error
 drag-sort-numbers,0,249698,1.0,2,5457,3,
 tic-tac-toe,0,249698,-0.75,3,9406,5,
-use-spinner,0,249698,-1.0,3,7312,4,
 book-flight,0,249698,0.0,17,0,0,"GraphRecursionError: Recursion limit of 31 reached without hitting a stop condition. You can increase the limit by setting the `recursion_limit` config key.
 For troubleshooting, visit: https://docs.langchain.com/oss/python/langgraph/errors/GRAPH_RECURSION_LIMIT"
 click-checkboxes-soft,0,249698,1.0,2,4010,2,

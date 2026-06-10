@@ -8,6 +8,7 @@ exactly what is sent and exactly what comes back -- is appended to that file.
 """
 
 import json
+import logging
 
 from datetime import datetime
 from pathlib import Path
@@ -19,6 +20,29 @@ from langchain_core.messages import AIMessage
 LOG_DIR = Path("logs")
 
 TRACE_TEXT_LIMIT = 300
+
+
+class _RetryLogHandler(logging.Handler):
+    """Forwards the OpenAI SDK's 'Retrying request' logs into a run log.
+
+    The SDK's automatic retries (`max_retries`) happen below LangChain's
+    callback layer, so they never reach `on_chat_model_start`/`on_llm_error` --
+    a stalled, silently-retrying call just looks like dead air in the file. The
+    SDK does emit an INFO `Retrying request ...` record through the standard
+    `openai` logger, so we capture those and write them into the run log.
+    """
+
+    def __init__(self, io_logger: "LLMIOLogger"):
+        super().__init__(level=logging.INFO)
+        self._io_logger = io_logger
+
+    def emit(self, record: logging.LogRecord) -> None:
+        try:
+            message = record.getMessage()
+        except Exception:
+            return
+        if "retrying request" in message.lower():
+            self._io_logger.note_retry(message)
 
 
 def _format_tool_calls(message) -> list[str]:
@@ -75,6 +99,7 @@ class LLMIOLogger(BaseCallbackHandler):
         self.path = Path(path)
         self._handle = open(self.path, "a", encoding="utf-8")
         self._call_index = 0
+        self._retry_handler: _RetryLogHandler | None = None
 
     def _write(self, text: str) -> None:
         self._handle.write(text)
@@ -83,6 +108,27 @@ class LLMIOLogger(BaseCallbackHandler):
     def note(self, text: str) -> None:
         """Write a free-form marker (e.g. a task boundary) into the log."""
         self._write(f"\n{'#' * 80}\n# {text}\n{'#' * 80}\n")
+
+    def note_retry(self, text: str) -> None:
+        """Record an SDK-level retry attempt (see `_RetryLogHandler`)."""
+        stamp = datetime.now().isoformat(timespec="seconds")
+        self._write(f"-- LLM RETRY  {stamp}: {text} --\n")
+
+    def attach_retry_logging(self) -> None:
+        """Capture the OpenAI SDK's retry log lines into this run file.
+
+        Idempotent; the handler is detached again in `close()`.
+        """
+        if self._retry_handler is not None:
+            return
+        handler = _RetryLogHandler(self)
+        openai_logger = logging.getLogger("openai")
+        # The retry record is emitted at INFO; make sure the logger lets it
+        # through without silencing pre-existing, more-verbose configuration.
+        if openai_logger.level == logging.NOTSET or openai_logger.level > logging.INFO:
+            openai_logger.setLevel(logging.INFO)
+        openai_logger.addHandler(handler)
+        self._retry_handler = handler
 
     def on_chat_model_start(self, serialized, messages, **kwargs) -> None:
         self._call_index += 1
@@ -137,6 +183,9 @@ class LLMIOLogger(BaseCallbackHandler):
         self._write(f"-- LLM ERROR  run_id={run_id}: {type(error).__name__}: {error} --\n")
 
     def close(self) -> None:
+        if self._retry_handler is not None:
+            logging.getLogger("openai").removeHandler(self._retry_handler)
+            self._retry_handler = None
         try:
             self._handle.close()
         except Exception:
@@ -155,6 +204,7 @@ def open_run_log(architecture: str, difficulty: str, subdir: str = "miniwob") ->
     path = log_dir / f"{timestamp}_{architecture}_{difficulty}.log"
 
     logger = LLMIOLogger(path)
+    logger.attach_retry_logging()
     logger._write(
         f"Run log: architecture={architecture} difficulty={difficulty} "
         f"started={datetime.now().isoformat(timespec='seconds')}\n"

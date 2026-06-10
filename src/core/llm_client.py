@@ -53,8 +53,8 @@ def get_llm_client():
     params = {
         "model": "Qwen/Qwen3.6-27B",
         "temperature": 0,
-        "timeout": 30,
-        "max_retries": 5,
+        "timeout": 120,
+        "max_retries": 3,
         "callbacks": callbacks,
         **get_llm_config(),
     }

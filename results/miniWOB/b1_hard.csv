@@ -1,0 +1,12 @@
+task,episode,seed,reward,num_actions,total_tokens,num_api_calls,error
+click-menu-2,0,800938,-1.0,2,10635,6,
+drag-sort-numbers,0,788027,1.0,2,14197,8,
+tic-tac-toe,0,788027,1.0,3,17008,7,
+book-flight,0,392315,1.0,10,46251,18,
+click-checkboxes-soft,0,392315,1.0,4,12903,6,
+copy-paste-2,0,392315,1.0,7,19206,10,
+terminal,0,392315,1.0,6,26147,11,
+social-media,0,392315,1.0,2,14373,4,
+guess-number,0,392315,1.0,8,16069,12,
+email-inbox,0,392315,1.0,4,14939,6,
+order-food,0,392315,1.0,3,22760,9,

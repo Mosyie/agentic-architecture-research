@@ -3,7 +3,6 @@
 hard = [
     "drag-sort-numbers",
     "tic-tac-toe",
-    "use-spinner",
     "book-flight",
     "click-checkboxes-soft",
     "click-menu-2",
@@ -16,8 +15,8 @@ hard = [
     ]
 
 medium = [
-    "drag-shapes",
     "drag-shapes-2",
+    "drag-shapes",
     "copy-paste",
     "click-checkboxes-large",
     "click-collapsible-2",
