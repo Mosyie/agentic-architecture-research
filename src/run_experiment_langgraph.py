@@ -13,7 +13,7 @@ from src.agents.b2_actor_critic_hotpotqa     import ActorCriticAgent
 from src.agents.c1_memory_hotpotqa           import MemoryAgent
 
 
-NUM_SAMPLES = 5
+NUM_SAMPLES = 500
 RESULT_DIR = Path("results/hotpotQa")
 
 
