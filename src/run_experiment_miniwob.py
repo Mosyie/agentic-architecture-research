@@ -1,5 +1,3 @@
-import random
-
 from argparse import ArgumentParser
 from pathlib import Path
 
@@ -20,7 +18,12 @@ RESULT_DIR = Path("results/miniwob")
 
 # Episodes (each a different task variant via seed+i) to run per task. Baked in
 # here rather than a flag; bump it for more variants per run.
-EPISODES_PER_TASK = 1
+EPISODES_PER_TASK = 3
+
+# Fixed base seed so every run -- and every architecture -- faces the identical
+# task variants (in MiniWoB the reset seed selects the variant). Episode i uses
+# BASE_SEED + i.
+BASE_SEED = 42
 
 
 def build_agent(architecture: str):
@@ -69,10 +72,7 @@ def main():
     tasks = get_tasks(args.difficulty)
     agent = build_agent(args.architecture)
 
-    # Random base seed per run so each run draws a fresh task variant (in MiniWoB
-    # the reset seed selects the variant). Recorded in the log and per-row CSV so
-    # any run stays reproducible.
-    base_seed = random.randrange(1_000_000)
+    base_seed = BASE_SEED
 
     print(
         f"Loading MiniWoB++ tasks "
@@ -112,7 +112,7 @@ def _run_tasks(base_seed, tasks, agent, result_path, results, run_logger):
                 env = make_env(task, headless=False)
                 obs, _info = env.reset(seed=seed)
 
-                instruction = format_observation(obs)
+                instruction = format_observation(obs, env)
 
                 episode_state = {
                     "last_reward": 0.0,

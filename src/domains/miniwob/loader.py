@@ -1,6 +1,8 @@
-
-
 hard = [
+    "buy-ticket",
+    "form-sequence-2",
+    "social-media-all",
+    "email-inbox-nl-turk",
     "drag-sort-numbers",
     "tic-tac-toe",
     "book-flight",
@@ -15,6 +17,12 @@ hard = [
     ]
 
 medium = [
+    "click-checkboxes-transfer",
+    "multi-orderings",
+    "phone-book",
+    "multi-layouts",
+    "click-tab-2",
+    "email-inbox-reply",
     "drag-shapes-2",
     "drag-shapes",
     "copy-paste",
@@ -22,12 +30,14 @@ medium = [
     "click-collapsible-2",
     "click-widget",
     "email-inbox-forward",
-    "use-autocomplete",
     "search-engine",
-    "navigate-tree"
+    "navigate-tree",
     ]
 
 easy = [
+    "click-link",
+    "click-dialog",
+    "enter-password",
     "drag-box",
     "drag-circle",
     "drag-single-shape",

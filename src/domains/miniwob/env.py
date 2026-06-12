@@ -128,7 +128,27 @@ def _interactable_elements(obs) -> list[dict]:
     return kept
 
 
-def _format_element(element: dict) -> str:
+def _svg_fills(env: gymnasium.Env) -> dict[int, str]:
+    """Map ref -> explicit SVG `fill` attribute for the live page.
+
+    MiniWoB's DOM extraction only captures CSS background/foreground colors,
+    which are transparent/black for SVG shapes -- the color that tasks like
+    drag-shapes-2 grade on lives in the `fill` attribute, so we read it from
+    the browser directly. Elements without an explicit fill (and containers
+    with fill='none') are omitted.
+    """
+    fills = env.unwrapped.instance.driver.execute_script(
+        "var out = {};"
+        "document.querySelectorAll('[data-wob_ref]').forEach(function(e){"
+        "  var f = e.getAttribute('fill');"
+        "  if (f && f !== 'none') out[e.getAttribute('data-wob_ref')] = f;"
+        "});"
+        "return out;"
+    )
+    return {int(ref): str(fill) for ref, fill in (fills or {}).items()}
+
+
+def _format_element(element: dict, fills: dict[int, str]) -> str:
     parts = [f'[{element["ref"]}]', element["tag"]]
     if element["elem_id"]:
         parts.append(f'#{element["elem_id"]}')
@@ -138,12 +158,19 @@ def _format_element(element: dict) -> str:
         parts.append(f'class="{element["classes"]}"')  # icons/controls with no text
     if element["value"]:
         parts.append(f'value="{element["value"]}"')
+    fill = fills.get(element["ref"])
+    if fill:
+        parts.append(f'fill="{fill}"')
     parts.append(f'({element["left"]},{element["top"]} {element["width"]}x{element["height"]})')
     return " ".join(parts)
 
 
-def format_observation(obs) -> str:
-    """Render the utterance + a list of interactable DOM elements."""
+def format_observation(obs, env: gymnasium.Env | None = None) -> str:
+    """Render the utterance + a list of interactable DOM elements.
+
+    Pass `env` to annotate SVG shapes with their fill color (see _svg_fills);
+    without it the rendering is unchanged.
+    """
     utterance = obs["utterance"]
 
     lines = [
@@ -153,11 +180,13 @@ def format_observation(obs) -> str:
         "(left,top widthxheight)):",
     ]
 
+    fills = _svg_fills(env) if env is not None else {}
+
     elements = _interactable_elements(obs)
     if not elements:
         lines.append("(no interactable elements found)")
     else:
-        lines.extend(_format_element(element) for element in elements)
+        lines.extend(_format_element(element, fills) for element in elements)
 
     return "\n".join(lines)
 

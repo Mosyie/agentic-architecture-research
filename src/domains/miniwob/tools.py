@@ -56,7 +56,7 @@ def make_miniwob_tools(env, episode_state: dict) -> list[StructuredTool]:
                 "No further actions possible."
             )
 
-        return format_observation(obs)
+        return format_observation(obs, env)
 
     # max_concurrency=1 (agent config) serializes batched tool calls, so the
     # single browser is never driven in parallel.
