@@ -10,8 +10,9 @@ from src.domains.miniwob.tools  import make_miniwob_tools
 from src.core.run_logger import open_run_log
 from src.core.llm_client import add_llm_callback, remove_llm_callback
 
-from src.agents.a1_single_miniwob_langgraph import SingleAgent
+from src.agents.a1_single_miniwob_langgraph  import SingleAgent
 from src.agents.b1_planner_executor_miniwob  import PlannerExecutorAgent
+from src.agents.b2_actor_critic_miniwob      import ActorCriticAgent
 
 
 RESULT_DIR = Path("results/miniwob")
@@ -33,6 +34,9 @@ def build_agent(architecture: str):
     if architecture == "b1":
         return PlannerExecutorAgent()
 
+    if architecture == "b2":
+        return ActorCriticAgent()
+
     raise ValueError(f"Unsupported architecture: {architecture}")
 
 
@@ -51,9 +55,9 @@ def parse_args():
     parser.add_argument(
         "-a",
         "--architecture",
-        choices=["a1", "b1"],
+        choices=["a1", "b1", "b2"],
         required=True,
-        help="Agent architecture to run: a1=single agent, b1=planner/executor.",
+        help="Agent architecture to run: a1=single agent, b1=planner/executor, b2=actor/critic.",
     )
     return parser.parse_args()
 
