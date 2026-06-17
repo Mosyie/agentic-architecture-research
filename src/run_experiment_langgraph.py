@@ -4,6 +4,8 @@ from pathlib import Path
 import pandas as pd
 
 from src.core.metrics                        import exact_match, f1_score_text
+from src.core.run_logger                     import open_run_log
+from src.core.llm_client                     import add_llm_callback, remove_llm_callback
 from src.domains.hotpotqa.tools              import make_hotpotqa_tools
 from src.domains.hotpotqa.loader             import load_hotpotqa_sample
 
@@ -13,7 +15,7 @@ from src.agents.b2_actor_critic_hotpotqa     import ActorCriticAgent
 from src.agents.c1_memory_hotpotqa           import MemoryAgent
 
 
-NUM_SAMPLES = 500
+NUM_SAMPLES = 10
 RESULT_DIR = Path("results/hotpotQa")
 
 
@@ -65,16 +67,39 @@ def main():
         f"Loading HotpotQA data "
         f"(difficulty={args.difficulty}, samples={NUM_SAMPLES})..."
     )
+
+    run_logger = open_run_log(args.architecture, args.difficulty, subdir="hotpotqa")
+    add_llm_callback(run_logger)
+    print(f"LLM I/O log: {run_logger.path}")
+    run_logger.note(
+        f"RUN architecture={args.architecture} difficulty={args.difficulty} "
+        f"samples={NUM_SAMPLES}"
+    )
+
     df = load_hotpotqa_sample(args.difficulty, num_samples=NUM_SAMPLES)
     agent = build_agent(args.architecture)
 
     results = []
 
+    try:
+        _run_questions(df, agent, result_path, results, run_logger)
+    finally:
+        remove_llm_callback(run_logger)
+        run_logger.close()
+
+    print(f"\nSaved results to: {result_path}")
+    print(f"LLM I/O log:     {run_logger.path}")
+
+
+def _run_questions(df, agent, result_path, results, run_logger):
     for index, row in df.iterrows():
         tools = make_hotpotqa_tools(row["context"])
 
         print(f"\n--- Question {index + 1} (Difficulty: {row['level']}) ---")
         print(f"Q: {row['question']}")
+        run_logger.note(
+            f"QUESTION {index + 1} level={row['level']}: {row['question']}"
+        )
 
         result = agent.invoke(
             question=row["question"],
@@ -112,8 +137,6 @@ def main():
 
         if error:
             print(f"Error: {error}")
-
-    print(f"\nSaved results to: {result_path}")
 
 
 if __name__ == "__main__":

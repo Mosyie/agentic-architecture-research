@@ -122,7 +122,7 @@ class PlannerExecutorAgent:
             )
 
         typed = self.planner_llm.with_structured_output(
-            PlannerDecision, method="json_schema", include_raw=True
+            PlannerDecision, method="function_calling", include_raw=True
         )
 
         try:
