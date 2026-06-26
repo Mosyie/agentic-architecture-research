@@ -13,6 +13,7 @@ from src.core.llm_client import add_llm_callback, remove_llm_callback
 from src.agents.a1_single_miniwob_langgraph  import SingleAgent
 from src.agents.b1_planner_executor_miniwob  import PlannerExecutorAgent
 from src.agents.b2_actor_critic_miniwob      import ActorCriticAgent
+from src.agents.c1_memory_miniwob            import MemoryAgent
 
 
 RESULT_DIR = Path("results/miniwob")
@@ -37,6 +38,9 @@ def build_agent(architecture: str):
     if architecture == "b2":
         return ActorCriticAgent()
 
+    if architecture == "c1":
+        return MemoryAgent()
+
     raise ValueError(f"Unsupported architecture: {architecture}")
 
 
@@ -55,9 +59,9 @@ def parse_args():
     parser.add_argument(
         "-a",
         "--architecture",
-        choices=["a1", "b1", "b2"],
+        choices=["a1", "b1", "b2", "c1"],
         required=True,
-        help="Agent architecture to run: a1=single agent, b1=planner/executor, b2=actor/critic.",
+        help="Agent architecture to run: a1=single agent, b1=planner/executor, b2=actor/critic, c1=actor/critic+memory.",
     )
     return parser.parse_args()
 

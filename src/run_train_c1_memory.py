@@ -11,12 +11,12 @@ from src.agents.c1_memory_hotpotqa import MemoryAgent
 
 # --- CONFIGURATION CONSTANTS ---
 LEVELS = ("easy", "medium", "hard")
-REFLECTION_F1_THRESHOLD = 0.5
+REFLECTION_F1_THRESHOLD = 1.0  # reflect on every non-perfect answer (f1 < 1.0)
 TEST_SET_SIZE = 500
 TOP_N = 7
 SEED = 42
 NUM_TRAIN_SAMPLES = 100
-MEMORY_DIR = "memory/c1"
+MEMORY_DIR = "memory/c1_hotpotqa"
 
 
 def split_counts(total: int, n_buckets: int) -> list[int]:

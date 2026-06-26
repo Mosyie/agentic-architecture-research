@@ -1,0 +1,18 @@
+{
+  "rules": [
+    "When moving multiple items, identify the correct target and verify all items are moved before completing the task."
+  ],
+  "training_episodes": 45,
+  "raw_rule_count": 1,
+  "consolidator_top_n": 7,
+  "per_level_counts": {
+    "easy": 15,
+    "medium": 15,
+    "hard": 15
+  },
+  "tasks_per_level": 15,
+  "train_seed": 41,
+  "reflection_threshold": 1.0,
+  "total_tokens": 401662,
+  "total_api_calls": 161
+}

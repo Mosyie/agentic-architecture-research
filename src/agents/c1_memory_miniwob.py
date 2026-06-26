@@ -9,7 +9,7 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from src.core.llm_client import get_llm_client
 from src.core.metrics    import llm_accounting
 
-from src.agents.b2_actor_critic_hotpotqa import (
+from src.agents.b2_actor_critic_miniwob import (
     ActorCriticAgent,
     ToolCallEntry,
     _format_trace,
@@ -17,37 +17,41 @@ from src.agents.b2_actor_critic_hotpotqa import (
 
 
 REFLECTOR_SYSTEM_PROMPT = (
-    "You analyze failures of a question-answering agent and propose ONE generic\n"
-    "strategy rule that would have prevented the failure.\n"
+    "You analyze failures of a web UI agent and propose ONE generic strategy\n"
+    "rule that would have prevented the failure.\n"
     "\n"
     "Constraints:\n"
-    "- The rule MUST be entity-free: no names, dates, titles, or specific facts.\n"
+    "- The rule MUST be entity-free: no specific page text, element ref ids,\n"
+    "  coordinates, input values, or task names.\n"
     "- The rule MUST be a single sentence.\n"
-    "- The rule MUST describe a transferable reasoning or retrieval strategy."
+    "- The rule MUST describe a transferable UI interaction or verification\n"
+    "  strategy that applies across different web tasks."
 )
 
 CONSOLIDATOR_SYSTEM_PROMPT = (
     "You receive a list of behavioral rules learned from past agent failures.\n"
     "Combine duplicates, drop overly specific or entity-bearing rules, and\n"
-    "return the top N most critical generic guidelines for multi-hop QA."
+    "return the top N most critical generic guidelines for interactive web UI\n"
+    "tasks."
 )
 
-DEFAULT_FROZEN_RULES_PATH = "memory/c1_hotpotqa/frozen_rules.json"
+DEFAULT_FROZEN_RULES_PATH = "memory/c1_miniwob/frozen_rules.json"
 
 
 class Reflection(BaseModel):
-    """One generic, entity-free strategy rule learned from a failed example."""
+    """One generic, entity-free strategy rule learned from a failed episode."""
 
     rule: str = Field(
         description=(
-            "A single sentence describing a transferable reasoning or retrieval "
-            "strategy. Must contain no names, dates, titles, or specific facts."
+            "A single sentence describing a transferable UI interaction or "
+            "verification strategy. Must contain no specific page text, element "
+            "ref ids, coordinates, input values, or task names."
         )
     )
 
 
 class Consolidation(BaseModel):
-    """Compressed top-N list of behavioral rules for multi-hop QA."""
+    """Compressed top-N list of behavioral rules for web UI tasks."""
 
     rules: list[str] = Field(
         description=(
@@ -100,8 +104,8 @@ class MemoryAgent(ActorCriticAgent):
     """Actor/Critic graph with frozen strategy rules injected into both prompts.
 
     Test-time usage: pass a ``frozen_rules_path`` (default points at the
-    standard artefact produced by ``run_train_c1_memory``). If the file is
-    missing or contains no rules the constructor raises.
+    standard artefact produced by ``run_train_c1_memory_miniwob``). If the file
+    is missing or contains no rules the constructor raises.
 
     Training-time usage: pass ``frozen_rules_path=None`` explicitly. The
     agent then runs without a rules block so the trainer can harvest the
@@ -111,9 +115,10 @@ class MemoryAgent(ActorCriticAgent):
     def __init__(
         self,
         frozen_rules_path: Optional[Union[str, Path]] = DEFAULT_FROZEN_RULES_PATH,
-        max_rounds: int = 5,
+        max_rounds: int = 3,
+        actor_max_steps: int = 15,
     ):
-        super().__init__(max_rounds=max_rounds)
+        super().__init__(max_rounds=max_rounds, actor_max_steps=actor_max_steps)
 
         self.reflector_llm    = get_llm_client()
         self.consolidator_llm = get_llm_client()
@@ -127,8 +132,8 @@ class MemoryAgent(ActorCriticAgent):
             if not p.exists():
                 raise FileNotFoundError(
                     f"MemoryAgent: frozen rules file {p!s} does not exist. "
-                    f"Run `python -m src.run_train_c1_memory` to produce it, "
-                    f"or pass frozen_rules_path=None for training mode."
+                    f"Run `python -m src.run_train_c1_memory_miniwob` to produce "
+                    f"it, or pass frozen_rules_path=None for training mode."
                 )
             rules = _load_rules(frozen_rules_path)
             if not rules:
@@ -150,26 +155,29 @@ class MemoryAgent(ActorCriticAgent):
 
     def reflect(
         self,
-        question: str,
-        tool_trace: list[ToolCallEntry],
-        prediction: str,
-        reference: str,
+        instruction: str,
+        action_trace: list[ToolCallEntry],
+        actor_report: str,
+        current_observation: str,
+        reward: float,
     ) -> tuple[Optional[str], int, int]:
-        """Produce one generic strategy rule from a failed training example.
+        """Produce one generic strategy rule from a failed training episode.
 
         Returns ``(rule_or_None, tokens, calls)``. ``rule`` is None when the
         Reflector's structured output could not be obtained.
         """
-        trace = _format_trace(tool_trace or [])
+        trace = _format_trace(action_trace or [])
 
         messages = [
             SystemMessage(content=REFLECTOR_SYSTEM_PROMPT),
             HumanMessage(
                 content=(
-                    f"Question:\n{question}\n\n"
-                    f"Tool Trace:\n{trace}\n\n"
-                    f"Agent Answer:\n{prediction}\n\n"
-                    f"Ground Truth Answer:\n{reference}\n"
+                    f"Task (initial page):\n{instruction}\n\n"
+                    f"Action Trace:\n{trace}\n\n"
+                    f"Agent Report:\n{actor_report}\n\n"
+                    f"Final page state:\n{current_observation}\n\n"
+                    f"The episode ended unsuccessfully (reward {reward:.3f} < "
+                    f"1.0): the task was not completed.\n"
                 )
             ),
         ]

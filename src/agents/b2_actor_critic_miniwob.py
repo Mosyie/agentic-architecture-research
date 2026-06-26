@@ -115,6 +115,14 @@ class ActorCriticAgent:
         self.max_rounds = max_rounds
         self.actor_max_steps = actor_max_steps
 
+    @property
+    def actor_system_prompt(self) -> str:
+        return ACTOR_SYSTEM_PROMPT
+
+    @property
+    def critic_system_prompt(self) -> str:
+        return CRITIC_SYSTEM_PROMPT
+
     def _actor_node(self, state: ActorCriticState, actor_agent) -> dict:
         messages = [HumanMessage(content=state["instruction"])]
 
@@ -202,7 +210,7 @@ class ActorCriticAgent:
         trace = _format_trace(state.get("action_trace", []) or [])
 
         messages = [
-            SystemMessage(content=CRITIC_SYSTEM_PROMPT),
+            SystemMessage(content=self.critic_system_prompt),
             HumanMessage(
                 content=(
                     f"Task (initial page):\n{state['instruction']}\n\n"
@@ -306,7 +314,7 @@ class ActorCriticAgent:
         actor_agent = _create_agent(
             self.actor_llm,
             tools,
-            system_prompt=ACTOR_SYSTEM_PROMPT,
+            system_prompt=self.actor_system_prompt,
         )
 
         graph = self._build_graph(actor_agent)
@@ -332,6 +340,10 @@ class ActorCriticAgent:
                 "total_tokens": 0,
                 "num_api_calls": 0,
                 "num_rounds": 0,
+                "action_trace": [],
+                "actor_report": "",
+                "current_observation": "",
+                "terminated": False,
                 "error": f"Graph failed: {type(exc).__name__}: {exc}",
             }
 
@@ -339,6 +351,10 @@ class ActorCriticAgent:
             "total_tokens": final_state.get("total_tokens", 0),
             "num_api_calls": final_state.get("num_api_calls", 0),
             "num_rounds": final_state.get("actor_steps", 0),
+            "action_trace": final_state.get("action_trace", []),
+            "actor_report": final_state.get("actor_report", ""),
+            "current_observation": final_state.get("current_observation", ""),
+            "terminated": final_state.get("terminated", False),
         }
 
         error = final_state.get("error", "")

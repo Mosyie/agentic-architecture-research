@@ -1,0 +1,109 @@
+level,prediction,reference,f1,em,tokens_used,num_api_calls,error,rule_added
+hard,"Based on the provided documents, the accounting companies that make up the ""Big Four"" excluding Ernst & Young are:
+
+* **PricewaterhouseCoopers**
+* **Deloitte Touche Tohmatsu**
+* **KPMG** 
+
+*(Note: These three, along with Ernst & Young, formed the ""Big Four"" after the collapse of Arthur Andersen, which was previously part of the ""Big Five"".)*","PricewaterhouseCoopers, Deloitte Touche Tohmatsu",0.15384615384615385,0,8007,6,,True
+medium,Yes,yes,1.0,1,3376,4,,False
+hard,,27 June 2013,0.0,0,11819,6,Actor failed: APITimeoutError: Request timed out.,False
+medium,Hozier,Hozier,1.0,1,4836,5,,False
+medium,Associated British Foods,Associated British Foods,1.0,1,5299,5,,False
+medium,The Indian pariah dog is the progenitor of the dingo.,Indian pariah dog,0.4615384615384615,0,4805,4,,True
+easy,HIV,HIV,1.0,1,5075,5,,False
+hard,"Cesena, Romagna",Romagna,0.6666666666666666,0,3761,5,,True
+easy,Discourse on the Origin and Basis of Inequality Among Men,Discourse on Inequality,0.4615384615384615,0,4068,4,,True
+easy,Lee Seung-hyun,Lee Seung-hyun,1.0,1,3839,4,,False
+easy,2,two,0.0,0,4662,4,,True
+easy,1981,1981,1.0,1,3652,4,,False
+hard,The Bazooka,Bazooka,0.6666666666666666,0,4478,5,,True
+easy,Road running,Road running,1.0,1,4924,5,,False
+hard,,rock,0.0,0,1299,1,Actor failed: APITimeoutError: Request timed out.,True
+easy,1955,1955,1.0,1,3228,4,,False
+hard,170,170 locations,0.6666666666666666,0,5236,5,,True
+hard,,Mick Taylor,0.0,0,3223,1,Actor failed: APITimeoutError: Request timed out.,True
+easy,Fawad Khan,Fawad Afzal Khan,0.8,0,5882,4,,True
+easy,"The Newark NHL team is the **New Jersey Devils**. They relocated to Newark, New Jersey, for the 2007–08 season and play their home games at the Prudential Center.",New Jersey Devils,0.19354838709677416,0,9088,4,,True
+medium,The Quiet Family,The Quiet Family,1.0,1,5000,5,,False
+hard,The César Award (specifically for Best Actress),César Award,0.4444444444444445,0,5101,5,,True
+easy,Indonesia,Indonesia,1.0,1,3044,4,,False
+medium,1985,1985,1.0,1,3877,4,,False
+hard,Murphy Brown,Jeff Mooring,0.0,0,4822,4,,True
+easy,Peter Thiel,Peter Andreas Thiel,0.8,0,4501,5,,True
+medium,Tiffany & Co.,Tiffany & Company,0.5,0,2974,4,,True
+hard,Skanderbeg,Skanderbeg,1.0,1,3383,4,,False
+easy,1941,1941,1.0,1,3048,4,,False
+hard,,Ben Karlin,0.0,0,2554,1,Actor failed: APITimeoutError: Request timed out.,True
+easy,Nine,nine,1.0,1,2939,4,,False
+medium,Edward Teller,Edward Teller,1.0,1,3475,4,,False
+hard,,Leah Kunkel,0.0,0,2034,1,Actor failed: APITimeoutError: Request timed out.,True
+easy,Robert F. Simon,Robert F. Simon,1.0,1,5514,4,,False
+hard,A hatchet,a hatchet,1.0,1,3449,4,,False
+easy,,Bob Wills,0.0,0,1065,1,Actor failed: APITimeoutError: Request timed out.,True
+medium,Tea Party Caucus,Tea Party Caucus,1.0,1,4586,5,,False
+medium,1993,1993,1.0,1,3988,4,,False
+medium,Bosnia and Herzegovina,Bosnia and Herzegovina,1.0,1,4993,5,,False
+easy,1971,1971,1.0,1,3301,4,,False
+medium,The National Archives and Records Administration (NARA),National Archives and Records Administration,0.8333333333333333,0,3397,4,,True
+medium,"No, they do not. James Dean Bradfield is the lead singer and guitarist for the Welsh alternative rock band **Manic Street Preachers**, while Danny Shirley is the lead singer of the American country rock band **Confederate Railroad**.",no,0.052631578947368425,0,3895,4,,True
+easy,Huldrych Zwingli,Huldrych Zwingli,1.0,1,3775,4,,False
+hard,"Honey, I Shrunk the Kids","Honey, I Shrunk the Kids",1.0,1,3484,4,,False
+easy,Nintendo,Nintendo,1.0,1,4181,4,,False
+easy,Gordon Gekko,Gordon Gekko,1.0,1,4098,4,,False
+hard,Dutch,Dutch people,0.6666666666666666,0,4494,5,,True
+easy,,"""It's Raining""",0.0,0,1620,1,Actor failed: APITimeoutError: Request timed out.,True
+medium,Inhumans,superhumans,0.0,0,2835,4,,True
+easy,"Elspeth Campbell was born in January 1940, and Menzies Campbell was born on 22 May 1941.",born January 1940,0.3157894736842105,0,3409,4,,True
+easy,Ermonela Jaho,Ermonela Jaho,1.0,1,5307,5,,False
+easy,Steroid hormone,steroid hormone,1.0,1,3534,4,,False
+easy,A ballet dancer,professional ballet dancer,0.6666666666666666,0,4564,5,,True
+medium,1948,1948,1.0,1,4478,5,,False
+easy,"Based on the provided text, Ed Orgeron is currently the head coach at **Louisiana State University** (LSU).",Louisiana State,0.21052631578947367,0,3920,4,,True
+hard,"Dallas, Texas",Oak Cliff area of Dallas,0.28571428571428575,0,5315,5,,True
+easy,Battle of Paris,Battle of Paris,1.0,1,4463,4,,False
+medium,1867,1867,1.0,1,4885,5,,False
+medium,Katie Cassidy plays the fictional character Ruby on the television show **Supernatural**.,Supernatural,0.15384615384615385,0,3840,4,,True
+hard,,São Miguel,0.0,0,1119,1,Actor failed: APITimeoutError: Request timed out.,True
+medium,,Baroness,0.0,0,1118,1,Actor failed: APITimeoutError: Request timed out.,True
+hard,John Lindley,John Warwick Lindley,0.8,0,5424,5,,True
+medium,No,no,1.0,1,3149,4,,False
+medium,K. R. Kaushik and Narendra Modi are from **India**.,India,0.19999999999999998,0,3878,4,,True
+medium,Documentary,documentary film,0.6666666666666666,0,3583,4,,True
+hard,"Averroes (Ibn Rushd) lived longer. He lived to be 72 years old (1126–1198), while Al-Ghazali lived to be 53 years old (1058–1111).",Ibn Rushd,0.16666666666666669,0,4203,4,,True
+medium,Dan Boren,Dan Boren,1.0,1,3769,4,,False
+hard,Roberto Formigoni,Roberto Formigoni,1.0,1,3547,4,,False
+medium,"Pawn Stars aired first, debuting on July 26, 2009, while Auction Kings premiered on October 26, 2010.",Pawn Stars,0.21052631578947367,0,3594,4,,True
+hard,Sidney Lumet,Sidney Lumet,1.0,1,4747,5,,False
+hard,Youssou N'Dour and Neneh Cherry,Youssou N'Dour and Neneh Cherry,1.0,1,4351,5,,False
+medium,"The ""Coronation of the Virgin"" mosaic, located over the inside door of Florence Cathedral (Santa Maria del Fiore), is attributed to Gaddo Gaddi.",Coronation of the Virgin,0.29629629629629634,0,3299,4,,True
+medium,1970,1970,1.0,1,4378,5,,False
+medium,Aunt Marge,Aunt Marge,1.0,1,3641,4,,False
+hard,A portrait,portrait,0.6666666666666666,0,6080,5,,True
+medium,Bookchase and San Marco are **board games**.,board game,0.22222222222222224,0,3604,4,,True
+hard,Brian Epstein,Brian Samuel Epstein,0.8,0,3790,4,,True
+easy,,singer,0.0,0,784,1,Actor failed: APITimeoutError: Request timed out.,True
+hard,Crafers,township of Stirling,0.0,0,5343,5,,True
+medium,,Undercover Cat,0.0,0,4088,1,Actor failed: APITimeoutError: Request timed out.,False
+medium,Blackstar,Blackstar,1.0,1,3734,4,,False
+hard,Rudolf Abel,Rudolf Ivanovich Abel,0.8,0,3868,4,,True
+medium,Barry George,Barry George,1.0,1,3420,4,,False
+easy,"**Echinacea** is a genus of herbaceous flowering plants in the daisy family, commonly known as purple coneflowers. They are native to eastern and central North America and are characterized by large, showy composite flowers with a spiny central disk.
+
+**Bamboo** refers to evergreen perennial flowering plants belonging to the subfamily Bambusoideae of the grass family (Poaceae). They are characterized by hollow stems with scattered vascular bundles and a lack of secondary growth wood, resulting in columnar stems.",plant,0.0,0,4494,4,,True
+easy,The Finest Hours: The True Story Behind the US Coast Guard's Most Daring Rescue,The Finest Hours,0.35294117647058826,0,4884,4,,True
+medium,"The Crocs River is a tributary of the Saint John River, which is nicknamed the **""Rhine of North America""**.","""Rhine of North America""",0.34782608695652173,0,4585,5,,True
+easy,"Yes, both TD Securities and Wachovia Securities are (or were) investment banks. TD Securities is a Canadian investment bank, while Wachovia Securities was the trade name for Wachovia's investment banking and capital markets subsidiaries before being rebranded as Wells Fargo Securities.",yes,0.047619047619047616,0,3754,4,,True
+easy,The Sikorsky S-2,S-2,0.5,0,4464,4,,True
+easy,1936,1936,1.0,1,3558,4,,False
+hard,"Italy, the United States, and France","Italy, the United States and since 2000, in France",0.8,0,4424,5,,True
+hard,Yes,yes,1.0,1,3933,4,,False
+hard,Margaret Cho,Margaret Moran Cho,0.8,0,4481,5,,True
+hard,1976,1976,1.0,1,4002,4,,False
+hard,"Ali Qushji was born first (1403), while Muhammad Iqbal was born in 1877.",Ali Qushji,0.2666666666666667,0,3937,4,,True
+easy,,8½,0.0,0,4902,1,Actor failed: APITimeoutError: Request timed out.,True
+medium,The European debt crisis,The European debt crisis,1.0,1,3364,4,,False
+hard,The head coach of the 1985 Oklahoma Sooners was Barry Switzer. He later led the **Dallas Cowboys** to a Super Bowl victory (Super Bowl XXX).,the Dallas Cowboys,0.21428571428571425,0,5183,5,,True
+easy,Professional tennis player,tennis player,0.8,0,3537,4,,True
+hard,Schweppes,Schweppes,1.0,1,3427,4,,False
+medium,Tanya Donelly,Tanya Donelly,1.0,1,3433,4,,False
