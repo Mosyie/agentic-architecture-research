@@ -35,7 +35,7 @@ hard,social-media-all,41,1.0,4,17172,3,,False
 hard,email-inbox-nl-turk,41,1.0,4,13415,5,,False
 hard,drag-sort-numbers,41,1.0,4,12551,5,,False
 hard,tic-tac-toe,41,1.0,3,7337,4,,False
-hard,book-flight,41,1.0,13,86921,14,,False
+hard,book-flight,41,0.0,15,103840,16,"Actor failed: GraphRecursionError: Recursion limit of 31 reached without hitting a stop condition.",True
 hard,click-checkboxes-soft,41,1.0,6,5388,2,,False
 hard,click-menu-2,41,1.0,2,4531,3,,False
 hard,copy-paste-2,41,1.0,6,14579,7,,False

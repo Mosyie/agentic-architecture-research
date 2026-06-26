@@ -142,60 +142,66 @@ class ActorCriticAgent:
         new_observation = state.get("current_observation", state["instruction"])
         terminated = False
 
+        # Stream (not invoke) so that if the actor hits its recursion limit we
+        # still retain the messages produced up to the crash. `last` holds the
+        # most recent streamed state before any error; on a clean run its final
+        # value equals what invoke() would have returned.
+        error = ""
+        last = None
         try:
-            result = actor_agent.invoke(
+            for chunk in actor_agent.stream(
                 {"messages": messages},
                 config={
                     "recursion_limit": self.actor_max_steps * 2 + 1,
                     "max_concurrency": 1,
                 },
-            )
-            messages_out = result.get("messages", [])
-
-            tokens, calls = llm_accounting(messages_out)
-
-            report = ""
-            for m in reversed(messages_out):
-                if isinstance(m, AIMessage) and not getattr(m, "tool_calls", None):
-                    report = (m.content or "").strip()
-                    break
-
-            new_entries: list[ToolCallEntry] = []
-            tool_calls_by_id: dict[str, dict] = {}
-            for m in messages_out:
-                if isinstance(m, AIMessage):
-                    for tc in (getattr(m, "tool_calls", None) or []):
-                        tool_calls_by_id[tc["id"]] = tc
-                elif isinstance(m, ToolMessage):
-                    tc = tool_calls_by_id.get(m.tool_call_id)
-                    if tc is None:
-                        continue
-                    args_str = json.dumps(tc.get("args", {}), default=str, ensure_ascii=False)
-                    tool_input = f"{tc.get('name', '<tool>')}({args_str})"
-                    output = m.content
-                    tool_output = output if isinstance(output, str) else str(output)
-                    new_entries.append(ToolCallEntry(tool_input=tool_input, tool_output=tool_output))
-
-            for m in reversed(messages_out):
-                if isinstance(m, ToolMessage):
-                    content = m.content or ""
-                    new_observation = content if isinstance(content, str) else str(content)
-                    if (
-                        "Episode finished" in new_observation
-                        or "Episode already finished" in new_observation
-                    ):
-                        terminated = True
-                    break
-
+                stream_mode="values",
+            ):
+                last = chunk
         except Exception as exc:  # graph errors, recursion limit, endpoint errors
-            return {
-                "error": f"Actor failed: {type(exc).__name__}: {exc}"
-            }
+            error = f"Actor failed: {type(exc).__name__}: {exc}"
+
+        messages_out = (last or {}).get("messages", [])
+
+        tokens, calls = llm_accounting(messages_out)
+
+        report = ""
+        for m in reversed(messages_out):
+            if isinstance(m, AIMessage) and not getattr(m, "tool_calls", None):
+                report = (m.content or "").strip()
+                break
+
+        new_entries: list[ToolCallEntry] = []
+        tool_calls_by_id: dict[str, dict] = {}
+        for m in messages_out:
+            if isinstance(m, AIMessage):
+                for tc in (getattr(m, "tool_calls", None) or []):
+                    tool_calls_by_id[tc["id"]] = tc
+            elif isinstance(m, ToolMessage):
+                tc = tool_calls_by_id.get(m.tool_call_id)
+                if tc is None:
+                    continue
+                args_str = json.dumps(tc.get("args", {}), default=str, ensure_ascii=False)
+                tool_input = f"{tc.get('name', '<tool>')}({args_str})"
+                output = m.content
+                tool_output = output if isinstance(output, str) else str(output)
+                new_entries.append(ToolCallEntry(tool_input=tool_input, tool_output=tool_output))
+
+        for m in reversed(messages_out):
+            if isinstance(m, ToolMessage):
+                content = m.content or ""
+                new_observation = content if isinstance(content, str) else str(content)
+                if (
+                    "Episode finished" in new_observation
+                    or "Episode already finished" in new_observation
+                ):
+                    terminated = True
+                break
 
         print(format_action_trace(messages_out))
         print(f"[ACTOR] {report}")
 
-        return {
+        out = {
             "actor_report": report,
             "action_trace": state.get("action_trace", []) + new_entries,
             "current_observation": new_observation,
@@ -205,6 +211,9 @@ class ActorCriticAgent:
             "actor_steps": state.get("actor_steps", 0) + 1,
             "critic_feedback": "",
         }
+        if error:
+            out["error"] = error
+        return out
 
     def _critic_node(self, state: ActorCriticState) -> dict:
         trace = _format_trace(state.get("action_trace", []) or [])
