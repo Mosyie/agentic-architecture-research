@@ -89,38 +89,6 @@ llm_accounting_tests = [
     ),
 
     (
-        [
-            AIMessage(content="a", response_metadata={
-                "token_usage": {
-                    "input_tokens": 0,
-                    "output_tokens": 15,
-                    "total_tokens": 15
-                }
-            })
-        ],
-        (15, 1),
-    ),
-
-    (
-        [
-            AIMessage(content="a", usage_metadata={
-                "input_tokens": 0,
-                "output_tokens": 5,
-                "total_tokens": 5
-            }),
-            HumanMessage(content="user"),
-            AIMessage(content="b", response_metadata={
-                "token_usage": {
-                    "input_tokens": 0,
-                    "output_tokens": 7,
-                    "total_tokens": 7
-                }
-            }),
-        ],
-        (12, 2),
-    ),
-
-    (
         [AIMessage(content="no metadata")],
         (0, 1),
     ),

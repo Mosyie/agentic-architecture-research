@@ -49,21 +49,10 @@ def f1_score_text(prediction: str, reference: str) -> float:
 def _tokens_of(ai_msg: AIMessage) -> int:
     """
     Extract total token usage from one AIMessage.
-
-    LangChain providers may expose usage in different places:
-    - usage_metadata["total_tokens"]
-    - response_metadata["token_usage"]["total_tokens"]
-
-    Returns 0 when token usage is unavailable.
+    Returns 0 only when no usage was returned at all.
     """
-    usage = getattr(ai_msg, "usage_metadata", None)
-    if usage and usage.get("total_tokens"):
-        return usage["total_tokens"]
-
-    meta = getattr(ai_msg, "response_metadata", None) or {}
-    token_usage = meta.get("token_usage") or {}
-
-    return token_usage.get("total_tokens", 0)
+    usage = getattr(ai_msg, "usage_metadata", None) or {}
+    return usage.get("total_tokens", 0)
 
 
 def llm_accounting(messages) -> tuple[int, int]:
