@@ -7,6 +7,10 @@ langchain
 langchain-openai
 langgraph
 
+# Results aggregation & figure generation (scripts/aggregate_results.py, plot_results.py)
+pandas
+matplotlib
+
 # MiniWoB++ domain (interactive UI benchmark).
 # `miniwob` drives a real Chromium browser via Selenium, so a matching
 # Chrome/Chromium + chromedriver must be installed on the host separately
