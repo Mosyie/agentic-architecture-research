@@ -1,0 +1,22 @@
+{
+  "rules": [
+    "Decompose complex or multi-hop questions into sequential steps, resolving each intermediate entity or factual component before synthesizing the final answer.",
+    "Verify that the selected entity explicitly satisfies all descriptive constraints and conditions stated in the question, avoiding answers based on partial matches.",
+    "When comparing multiple entities or identifying shared attributes, retrieve and verify information for each entity independently before determining the commonality or correct relationship.",
+    "Extract the exact full name, phrase, or designation as it appears in the source context, preserving precise formatting and avoiding abbreviations or automatic conversions.",
+    "Ensure the final answer strictly matches the requested entity type, granularity, and scope, delivering a direct and concise response without conversational filler or extraneous details.",
+    "Cross-reference information across multiple retrieved documents to verify specific details, resolve ambiguities, and confirm comparative or chronological claims.",
+    "Carefully parse relational queries to distinguish between the target subject and reference entities, ensuring the extracted answer corresponds precisely to the requested entity."
+  ],
+  "training_size": 100,
+  "raw_rule_count": 53,
+  "consolidator_top_n": 7,
+  "per_level_counts": {
+    "easy": 34,
+    "medium": 33,
+    "hard": 33
+  },
+  "reflection_threshold": 1.0,
+  "total_tokens": 556423,
+  "total_api_calls": 453
+}

@@ -1,0 +1,6 @@
+{
+  "rules": [
+    "When an instruction specifies moving multiple items into a target, identify the correct container and verify that all matching items have been moved into it before submitting.",
+    "When an autocomplete dropdown appears after typing into an input field, always select the suggested option to ensure the value is properly recognized before proceeding."
+  ]
+}

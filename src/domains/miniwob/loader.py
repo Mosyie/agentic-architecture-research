@@ -1,0 +1,89 @@
+hard = [
+    "buy-ticket",
+    "form-sequence-2",
+    "social-media-all",
+    "email-inbox-nl-turk",
+    "drag-sort-numbers",
+    "tic-tac-toe",
+    "book-flight",
+    "click-checkboxes-soft",
+    "click-menu-2",
+    "copy-paste-2",
+    "terminal",
+    "social-media",
+    "guess-number",
+    "email-inbox",
+    "order-food"
+    ]
+
+medium = [
+    "click-checkboxes-transfer",
+    "multi-orderings",
+    "phone-book",
+    "multi-layouts",
+    "click-tab-2",
+    "email-inbox-reply",
+    "drag-shapes-2",
+    "drag-shapes",
+    "copy-paste",
+    "click-checkboxes-large",
+    "click-collapsible-2",
+    "click-widget",
+    "email-inbox-forward",
+    "search-engine",
+    "navigate-tree",
+    ]
+
+easy = [
+    "click-link",
+    "click-dialog",
+    "enter-password",
+    "drag-box",
+    "drag-circle",
+    "drag-single-shape",
+    "grid-coordinate",
+    "login-user",
+    "click-button",
+    "email-inbox-delete",
+    "text-transform",
+    "simple-arithmetic",
+    "simple-algebra",
+    "read-table-2",
+    "focus-text-2"
+    ]
+
+"""
+Difficulty is rated on the task itself, against the
+text/DOM observation we feed the agent. Five axes:
+
+  1. horizon      -- number of dependent actions before reward
+  2. statefulness -- must the agent react to mid-task UI changes (dropdown opens,
+                     autocomplete populates, tree expands) or is it one-shot?
+  3. reasoning    -- arithmetic / algebra / sorting / semantic-matching / strategy
+                     vs. a direct lookup
+  4. planning     -- independent sub-goals with ordering constraints
+                     (e.g. book-flight: search -> filter -> pick -> confirm)
+  5. grounding    -- is the needed info directly legible, or must the agent
+                     discover a non-obvious interaction / the right action
+                     (e.g. terminal: figure out the command)?
+
+  easy   = low on all five
+  medium = bumps one axis
+  hard   = bumps two+ axes
+"""
+
+_LEVELS = {"easy": easy, "medium": medium, "hard": hard}
+
+
+def get_tasks(level: str) -> list[str]:
+    """Return the MiniWoB++ task names for a difficulty level."""
+    key = level.lower()
+    if key not in _LEVELS:
+        raise ValueError(f"Unknown level '{level}'. Use easy | medium | hard.")
+    return list(_LEVELS[key])
+
+
+if __name__ == "__main__":
+    print(f"easy: {len(easy)}")
+    print(f"medium: {len(medium)}")
+    print(f"hard: {len(hard)}")
