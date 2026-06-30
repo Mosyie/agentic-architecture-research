@@ -98,31 +98,26 @@ To make this scientifically valid, we are going to run every experiment with the
 
 ## Agents
 
-#### A1 - Single Agent (Baseline)
+#### A1 - Single Agent
 
 - Single agent working on the input task
 - There is no role separation
 
-> implementation differs in the two domains:
-> - **HotpotQA:** Single LLM call
-> - **MiniWoB++:**  Multiple LLM calls, to the same agent (multistep task)
-
-
-#### A2 - Planner -> Executor
+#### B1 - Planner -> Executor
 
  __Planner:__ Decomposes tasks into steps -  __Executor:__ executes each step sequentially
 
  - Planner output is structured (like a list of steps)
  - Executor must follow the plan (no improvisation)
 
-#### A3 - Actor -> Critic
+#### B2 - Actor -> Critic
 
 __Actor:__ Provides an answer - __Critic:__ Evaluates the correctness, and consistency
 
 - Critic must justifiy the critique
 - Revision step must use critic feedback - revision happens
 
-#### A4 - Reflective/Memory agent
+#### C1 - Reflective/Memory agent
 
 - Pretrained memories from train runs
 - Loads these memories at the beggining as guardrails for the task completion
