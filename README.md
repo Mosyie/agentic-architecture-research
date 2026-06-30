@@ -14,12 +14,12 @@ Agentio Architecture Research - Natural Language Processing
 
 ## Formal definition
 
-### **Changable varibales:**
+### **Changable variables:**
 
 - Agent Architecture
     - Single agent
     - Planner → Executor
-    - Executor → Critic
+    - Actor → Critic
     - Reflective / Memory-based agent
 - Task Domain
     - HotpotQA (reasoning)
@@ -65,9 +65,8 @@ Convert a natural language instruction and dynamic UI state into a sequence of a
         - visible text
         - element attributes
         - optional constraints:
-            - partial observability
             - action limits
-            - time/step budget
+            - time (600 seconds)
 
 - Core Operations:
     - interpret UI structure and available elements
@@ -83,12 +82,12 @@ Convert a natural language instruction and dynamic UI state into a sequence of a
         - F1 Score
     - MiniWoB++
         - Action count
-        - Average reward
+        - Reward
 2. Cost
     - Total tokens used
     - Number of API calls
 3. Robustness
-    - Variance across runs
+    - Variance across runs (for miniwob only, with different seeds - its the same task, and we weight each task the same)
 
 ## Experimental requirements
 
@@ -96,8 +95,6 @@ To make this scientifically valid, we are going to run every experiment with the
 > Each architecture must run on the same input data<br/>
 
 > Use the same LLM tool (provided by the university via API call)<br/>
-
-> Run each configuration multiple time, and try to report mean & standard deviation
 
 ## Agents
 
@@ -118,18 +115,17 @@ To make this scientifically valid, we are going to run every experiment with the
  - Planner output is structured (like a list of steps)
  - Executor must follow the plan (no improvisation)
 
-#### A3 - Executor -> Critic
+#### A3 - Actor -> Critic
 
-__Executor:__ Provides an answer - __Critic:__ Evaluates the correctness, and consistency
+__Actor:__ Provides an answer - __Critic:__ Evaluates the correctness, and consistency
 
 - Critic must justifiy the critique
 - Revision step must use critic feedback - revision happens
 
 #### A4 - Reflective/Memory agent
 
-- Maintains state across steps
-- Can revise strategy
-- Must show the reuse of memory in the later steps
+- Pretrained memories from train runs
+- Loads these memories at the beggining as guardrails for the task completion
 
 ## Difficulty designs
 
@@ -141,7 +137,7 @@ For HotpotQA dataset the questions are tagged with a difficulty level tag: `easy
 ### MiniWoB++
 
 Some MiniWob++ environments come with difficulty level tag: [Enviroment List](https://miniwob.farama.org/environments/list/)</br>
-However, this amount of data is not particularly enough, so we are going to select `easy`, `medium`, `hard` tasks and separate them based on our own human judgment.
+However, this amount of data is not particularly enough, so we are going to select `easy`, `medium`, `hard` tasks and separate them based on our own human judgment - we added each task 3 times with different seeding.
 
 
 ## Final output
